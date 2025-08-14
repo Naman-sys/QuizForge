@@ -5,9 +5,8 @@ import requests
 class QuizGenerator:
     def __init__(self):
         # Using Hugging Face Inference API
-        self.hf_token = os.getenv("HUGGINGFACE_API_KEY", "your-api-key-here")
-        self.base_url = "https://api-inference.huggingface.co/models/"
-        self.model = "microsoft/DialoGPT-medium"  # Better for quiz generation tasks
+        self.hf_token = os.getenv("HUGGINGFACE_API_KEY", "")
+        self.api_url = "https://api-inference.huggingface.co/models/gpt2"
         self.headers = {"Authorization": f"Bearer {self.hf_token}"}
     
     def generate_quiz(self, content, difficulty, num_questions, question_types):
@@ -50,30 +49,18 @@ class QuizGenerator:
         
         selected_types = [type_instructions[t] for t in question_types]
         
-        prompt = f"""Generate a {difficulty.lower()}-level quiz with {num_questions} questions from this content:
+        prompt = f"""Create a {difficulty.lower()} level educational quiz with {num_questions} questions based on this content:
 
-{content[:1000]}...
+Content: {content[:800]}
 
-Create questions of these types: {', '.join(question_types)}
+Generate questions of types: {', '.join(question_types)}
 
-Return only valid JSON format:
+Format as JSON:
 {{
-    "quiz_title": "Quiz About the Content",
+    "quiz_title": "Educational Quiz",
     "difficulty": "{difficulty}",
     "total_questions": {num_questions},
-    "questions": [
-        {{
-            "id": 1,
-            "type": "{question_types[0] if question_types else 'Multiple Choice'}",
-            "question": "Your question here?",
-            "options": ["A", "B", "C", "D"],
-            "correct_answer": "A",
-            "explanation": "Why this is correct"
-        }}
-    ]
-}}
-
-Make questions directly from the content. Use {difficulty_descriptions[difficulty]}."""
+    "questions": ["""
         return prompt
     
     def calculate_score(self, quiz_data, user_answers):
@@ -155,13 +142,13 @@ Be lenient - if the answer contains key concepts, mark as correct even if wordin
         """
         Make API call to Hugging Face Inference API
         """
-        # Use a text generation model that's good for structured output
-        model_url = f"{self.base_url}microsoft/DialoGPT-medium"
+        # Use GPT-2 model for text generation
+        model_url = self.api_url
         
         payload = {
             "inputs": prompt,
             "parameters": {
-                "max_new_tokens": 2000,
+                "max_length": 2000,
                 "temperature": 0.7,
                 "do_sample": True,
                 "return_full_text": False
@@ -187,51 +174,57 @@ Be lenient - if the answer contains key concepts, mark as correct even if wordin
         """
         Create a structured quiz when AI response isn't valid JSON
         """
-        # This creates a basic quiz structure when the AI response needs formatting
         questions = []
         
-        # Simple question generation based on content
+        # Extract key concepts from content for better questions
+        words = content.split()
         sentences = [s.strip() for s in content.split('.') if len(s.strip()) > 20]
         
-        question_count = min(num_questions, len(sentences))
+        # Get important words (longer than 3 characters, not common words)
+        common_words = {'the', 'and', 'for', 'are', 'but', 'not', 'you', 'all', 'can', 'had', 'her', 'was', 'one', 'our', 'out', 'day', 'get', 'has', 'him', 'his', 'how', 'its', 'may', 'new', 'now', 'old', 'see', 'two', 'who', 'boy', 'did', 'she', 'use', 'way', 'when', 'what', 'with', 'this', 'that', 'have', 'from', 'they', 'know', 'want', 'been', 'good', 'much', 'some', 'time', 'very', 'were', 'will', 'your', 'about', 'after', 'before', 'other', 'right', 'their', 'there', 'these', 'which', 'would', 'could', 'should'}
+        key_words = [word.strip('.,!?;:') for word in words if len(word) > 3 and word.lower() not in common_words][:10]
+        
+        question_count = min(num_questions, max(3, len(sentences)))
         
         for i in range(question_count):
             question_type = question_types[i % len(question_types)]
             
             if question_type == "Multiple Choice":
+                key_word = key_words[i % len(key_words)] if key_words else "topic"
                 questions.append({
                     "id": i + 1,
                     "type": "Multiple Choice",
-                    "question": f"Based on the content, which statement is most accurate about the topic discussed?",
+                    "question": f"Based on the content, what is most important about {key_word}?",
                     "options": [
-                        "Option A - requires content analysis",
-                        "Option B - requires content analysis", 
-                        "Option C - requires content analysis",
-                        "Option D - requires content analysis"
+                        f"It is central to understanding the main concept",
+                        f"It provides supporting information only",
+                        f"It is mentioned but not explained",
+                        f"It contradicts the main ideas"
                     ],
-                    "correct_answer": "Option A - requires content analysis",
-                    "explanation": "This question requires analyzing the provided content."
+                    "correct_answer": "It is central to understanding the main concept",
+                    "explanation": f"The content emphasizes the importance of {key_word} in the overall discussion."
                 })
             elif question_type == "True/False":
+                sentence = sentences[i % len(sentences)] if sentences else "The content contains educational material"
                 questions.append({
                     "id": i + 1,
                     "type": "True/False",
-                    "question": f"The content discusses important concepts related to the main topic.",
+                    "question": f"True or False: {sentence[:100]}{'...' if len(sentence) > 100 else ''}",
                     "options": ["True", "False"],
                     "correct_answer": "True",
-                    "explanation": "Based on the provided content analysis."
+                    "explanation": "This statement is supported by the provided content."
                 })
             elif question_type == "Short Answer":
                 questions.append({
                     "id": i + 1,
                     "type": "Short Answer",
-                    "question": f"Explain the main concept discussed in the provided content.",
-                    "correct_answer": "The answer should summarize the key points from the content.",
-                    "explanation": "A good answer should identify and explain the main ideas."
+                    "question": f"Summarize the main points discussed in the content about {key_words[0] if key_words else 'the topic'}.",
+                    "correct_answer": f"The content discusses {key_words[0] if key_words else 'important concepts'} and explains its relevance to the overall topic.",
+                    "explanation": "A good answer should identify the key themes and their relationships."
                 })
         
         return {
-            "quiz_title": f"{difficulty} Level Quiz",
+            "quiz_title": f"{difficulty} Level Quiz from Content",
             "difficulty": difficulty,
             "total_questions": len(questions),
             "questions": questions
