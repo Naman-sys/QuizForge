@@ -689,6 +689,7 @@ def main():
         
         st.subheader("Supported Content Types")
         st.write("📄 **PDF Files**: Chapters, research papers, textbooks")
+        st.write("📊 **CSV Data**: Datasets, tables, statistical information")
         st.write("📰 **Articles**: Blog posts, news articles, web content")
         st.write("📖 **Text Content**: Any educational or informational text")
         
@@ -727,7 +728,7 @@ def main():
     st.header("📝 Choose Input Method")
     input_method = st.radio(
         "Select how you want to provide content:",
-        ["📄 Upload PDF File", "📰 Paste Article Text"],
+        ["📄 Upload PDF File", "📊 Upload CSV Data", "📰 Paste Article Text"],
         horizontal=True
     )
     
@@ -738,7 +739,7 @@ def main():
         uploaded_file = st.file_uploader(
             "Choose a PDF file:",
             type=['pdf'],
-            help="Upload a PDF containing a chapter or text content for quiz generation"
+            help="Upload a PDF chapter containing text content for quiz generation"
         )
         
         if uploaded_file is not None:
@@ -751,6 +752,28 @@ def main():
                 
             except Exception as e:
                 st.error(f"Error processing PDF: {str(e)}")
+    
+    elif input_method == "📊 Upload CSV Data":
+        st.subheader("CSV Data Upload")
+        uploaded_file = st.file_uploader(
+            "Choose a CSV file:",
+            type=['csv'],
+            help="Upload a CSV file containing data for quiz generation"
+        )
+        
+        if uploaded_file is not None:
+            try:
+                # Process CSV file
+                from file_processor import FileProcessor
+                processor = FileProcessor()
+                
+                with st.spinner("Processing CSV data..."):
+                    extracted_text = processor.process_file(uploaded_file)
+                
+                st.success(f"✅ CSV data processed successfully! ({len(extracted_text)} characters)")
+                
+            except Exception as e:
+                st.error(f"Error processing CSV: {str(e)}")
     
     elif input_method == "📰 Paste Article Text":
         st.subheader("Article Text Input")

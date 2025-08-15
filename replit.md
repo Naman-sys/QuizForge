@@ -13,6 +13,8 @@ Preferred communication style: Simple, everyday language.
 **Content Processing Layer**
 - `extract_text_from_pdf()` function uses pdfplumber for clean PDF text extraction
 - `extract_text_from_article()` function processes and validates article text input
+- `FileProcessor` class handles multiple file types including PDF, CSV, DOCX, and TXT
+- CSV processing with pandas for data analysis and intelligent content extraction
 - Handles text-based PDFs and provides clear error messages for problematic files
 - Text cleaning and normalization for article content with minimum length validation
 - Graceful error handling for missing dependencies and extraction failures
@@ -65,6 +67,7 @@ Preferred communication style: Simple, everyday language.
 
 ## File Processing Libraries
 - **pdfplumber**: Primary PDF text extraction library with excellent text quality
+- **pandas**: CSV data processing and analysis for generating data-based questions
 - **python-docx**: Export functionality for DOCX quiz formats
 - **requests**: HTTP client for Hugging Face API interactions
 
@@ -79,6 +82,19 @@ Preferred communication style: Simple, everyday language.
 - **streamlit**: Complete web application framework with built-in components
 
 # Recent Changes (August 15, 2025)
+
+## CSV File Support Added
+- Added comprehensive CSV file processing with pandas integration
+- Created intelligent data analysis for generating quiz questions from datasets
+- Added support for numeric and categorical data summarization
+- Implemented sample data extraction and statistical insights for quiz generation
+- Updated UI to include CSV upload option alongside PDF and article text
+- Enhanced FileProcessor class with robust CSV handling and error management
+
+## UI Improvements
+- Centered all content elements for better visual presentation
+- Updated file uploader interface to support multiple file types
+- Added separate input methods for PDF files, CSV data, and article text
 
 - Completely rebuilt as a structured PDF Quiz Generator application
 - Implemented four core functions as requested: extract_text_from_pdf(), generate_questions_with_local_ai(), render_quiz_form(), export_quiz()
