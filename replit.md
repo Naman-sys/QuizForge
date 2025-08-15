@@ -19,7 +19,7 @@ Preferred communication style: Simple, everyday language.
 
 **AI Question Generation**
 - `generate_questions_with_hf()` function integrates with Hugging Face Inference API
-- Uses mistralai/Mistral-7B-Instruct-v0.1 model for intelligent question generation
+- Uses tiiuae/falcon-7b-instruct model for intelligent question generation
 - `create_fallback_questions()` provides content-based question generation when AI responses need formatting
 - Supports configurable numbers of multiple-choice and true/false questions
 
@@ -54,7 +54,7 @@ Preferred communication style: Simple, everyday language.
 # External Dependencies
 
 ## AI Services
-- **Hugging Face Inference API**: Primary service using mistralai/Mistral-7B-Instruct-v0.1 model
+- **Hugging Face Inference API**: Primary service using tiiuae/falcon-7b-instruct model
 - Requires HUGGINGFACE_API_KEY environment variable for authentication
 - Advanced JSON parsing with intelligent fallback for non-JSON responses
 - Content-based question generation when API calls fail
@@ -78,7 +78,7 @@ Preferred communication style: Simple, everyday language.
 
 - Completely rebuilt as a structured PDF Quiz Generator application
 - Implemented four core functions as requested: extract_text_from_pdf(), generate_questions_with_hf(), render_quiz_form(), export_quiz()
-- Upgraded to mistralai/Mistral-7B-Instruct-v0.1 model for better instruction following
+- Upgraded to tiiuae/falcon-7b-instruct model for better instruction following
 - Added comprehensive PDF-only upload with pdfplumber integration
 - Created interactive quiz editing interface with add/delete/modify capabilities
 - Implemented dual export format support (TXT and DOCX) with proper formatting
