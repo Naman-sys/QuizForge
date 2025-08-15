@@ -42,10 +42,12 @@ def apply_custom_styling():
         padding-top: 2rem;
         background: rgba(30, 30, 46, 0.95);
         border-radius: 20px;
-        margin: 1rem;
+        margin: 1rem auto;
+        max-width: 1200px;
         box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
         backdrop-filter: blur(10px);
         border: 1px solid rgba(255, 255, 255, 0.1);
+        text-align: center;
     }
     
     /* Headings */
@@ -74,6 +76,12 @@ def apply_custom_styling():
         padding-bottom: 0.5rem;
         margin-bottom: 1.5rem !important;
         text-shadow: 0 0 10px rgba(0, 212, 255, 0.5);
+        text-align: center;
+    }
+    
+    h3 {
+        text-align: center;
+        color: #ffffff !important;
     }
     
     /* Sidebar Styling */
@@ -264,6 +272,44 @@ def apply_custom_styling():
         text-align: center !important;
         transition: all 0.3s ease !important;
         color: #ffffff !important;
+        margin: 0 auto !important;
+        max-width: 600px !important;
+    }
+    
+    /* Center align all content */
+    .stApp > div > div > div > div {
+        text-align: center !important;
+    }
+    
+    /* Center form elements */
+    .stSelectbox, .stSlider, .stTextInput, .stTextArea, .stNumberInput {
+        text-align: center !important;
+        margin: 0 auto !important;
+        max-width: 600px !important;
+    }
+    
+    /* Center buttons */
+    .stButton {
+        text-align: center !important;
+        margin: 1rem auto !important;
+        display: block !important;
+    }
+    
+    /* Center columns */
+    .row-widget {
+        justify-content: center !important;
+    }
+    
+    /* Center labels */
+    label {
+        text-align: center !important;
+        display: block !important;
+        width: 100% !important;
+    }
+    
+    /* Center content sections */
+    .element-container {
+        text-align: center !important;
     }
     
     .stFileUploader:hover {
