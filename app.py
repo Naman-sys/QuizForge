@@ -1,19 +1,25 @@
 import streamlit as st
-import json
 import os
-import requests
+import json
 import io
-from docx import Document
-from docx.shared import Inches
+import re
+import random
 
+# Import libraries with error handling
 try:
     import pdfplumber
 except ImportError:
     pdfplumber = None
 
-# Configure Streamlit page
+try:
+    from docx import Document
+    from docx.shared import Inches
+except ImportError:
+    Document = None
+
+# Streamlit page config
 st.set_page_config(
-    page_title="PDF Quiz Generator",
+    page_title="AI Quiz Generator",
     page_icon="📚",
     layout="wide"
 )
@@ -55,7 +61,6 @@ def extract_text_from_article(article_text):
     cleaned_text = article_text.strip()
     
     # Remove excessive whitespace and normalize line breaks
-    import re
     cleaned_text = re.sub(r'\n\s*\n', '\n\n', cleaned_text)
     cleaned_text = re.sub(r' +', ' ', cleaned_text)
     
@@ -64,19 +69,16 @@ def extract_text_from_article(article_text):
     
     return cleaned_text
 
-def generate_questions_with_local_ai(text_content, num_mc=5, num_tf=5):
+def generate_questions_with_local_ai(text_content, num_mc=5, num_tf=5, difficulty="medium", question_types=["multiple_choice", "true_false"]):
     """
     Generate quiz questions using local content analysis without external APIs
     """
-    return create_intelligent_questions(text_content, num_mc, num_tf)
+    return create_intelligent_questions(text_content, num_mc, num_tf, difficulty, question_types)
 
-def create_intelligent_questions(content, num_mc=5, num_tf=5):
+def create_intelligent_questions(content, num_mc=5, num_tf=5, difficulty="medium", question_types=["multiple_choice", "true_false"]):
     """
     Create intelligent quiz questions using local content analysis
     """
-    import re
-    import random
-    
     # Process content into sentences and extract key information
     sentences = [s.strip() for s in re.split(r'[.!?]+', content) if len(s.strip()) > 20]
     words = content.split()
@@ -97,137 +99,96 @@ def create_intelligent_questions(content, num_mc=5, num_tf=5):
     # Remove duplicates and take top terms
     key_terms = list(dict.fromkeys(key_terms))[:15]
     
-    # Extract numbers and measurements
-    numbers = re.findall(r'\d+(?:\.\d+)?(?:\s*million|billion|thousand|%|km|meters|years|species)?', content)
-    
     # Generate Multiple Choice Questions
     multiple_choice = []
     
-    # Question types based on content analysis
-    question_types = [
-        ("definition", "What is"),
-        ("significance", "What is the significance of"),
-        ("function", "What role does"),
-        ("characteristic", "Which characteristic describes"),
-        ("location", "Where is"),
-        ("quantity", "How many/much")
-    ]
-    
-    for i in range(min(num_mc, len(key_terms))):
-        term = key_terms[i]
-        q_type, q_start = random.choice(question_types)
-        
-        # Find context for this term
-        context_sentences = [s for s in sentences if term.lower() in s.lower()]
-        context = context_sentences[0] if context_sentences else f"Information about {term}"
-        
-        # Generate question based on term and context
-        if q_type == "definition":
-            question = f"{q_start} {term}?"
-            correct_option = f"An important concept mentioned in the text"
-            wrong_options = [
-                f"A minor detail not discussed",
-                f"Something unrelated to the topic",
-                f"An outdated concept"
-            ]
-        elif q_type == "significance":
-            question = f"{q_start} {term} in this context?"
-            correct_option = f"It plays a crucial role in the topic discussed"
-            wrong_options = [
-                f"It has minimal importance",
-                f"It contradicts the main ideas",
-                f"It is only mentioned in passing"
-            ]
-        else:
-            question = f"{q_start} {term} contribute to the topic?"
-            correct_option = f"It is a key element in understanding the subject"
-            wrong_options = [
-                f"It provides contradictory information",
-                f"It is irrelevant to the main discussion",
-                f"It offers only background context"
-            ]
-        
-        # Shuffle options
-        all_options = [correct_option] + wrong_options
-        random.shuffle(all_options)
-        correct_index = all_options.index(correct_option)
-        correct_letter = ['A', 'B', 'C', 'D'][correct_index]
-        
-        formatted_options = [f"{['A', 'B', 'C', 'D'][j]}) {opt}" for j, opt in enumerate(all_options)]
-        
-        multiple_choice.append({
-            "question": question,
-            "options": formatted_options,
-            "correct_answer": correct_letter,
-            "explanation": f"Based on the content, {term} is discussed as {correct_option.lower()}."
-        })
+    # Only generate multiple choice if requested
+    if "multiple_choice" in question_types and key_terms:
+        for i in range(min(num_mc, len(key_terms))):
+            term = key_terms[i]
+            
+            # Generate question based on difficulty
+            if difficulty == "easy":
+                question = f"What is {term}?"
+                correct_option = "A key concept discussed in the text"
+                wrong_options = [
+                    "Something not mentioned",
+                    "An unrelated topic", 
+                    "A minor detail"
+                ]
+            elif difficulty == "medium":
+                question = f"According to the content, what is the significance of {term}?"
+                correct_option = "It plays a crucial role in the topic discussed"
+                wrong_options = [
+                    "It has minimal importance",
+                    "It contradicts the main ideas",
+                    "It is only mentioned in passing"
+                ]
+            else:  # hard
+                question = f"Analyze the role of {term} within the broader context of this topic?"
+                correct_option = "It represents a critical factor that influences multiple aspects of the subject"
+                wrong_options = [
+                    "It serves as a peripheral element with limited interconnections",
+                    "It contradicts the established theoretical framework", 
+                    "It represents an anomaly that challenges conventional understanding"
+                ]
+            
+            # Shuffle options
+            all_options = [correct_option] + wrong_options
+            random.shuffle(all_options)
+            correct_index = all_options.index(correct_option)
+            correct_letter = ['A', 'B', 'C', 'D'][correct_index]
+            
+            formatted_options = [f"{['A', 'B', 'C', 'D'][j]}) {opt}" for j, opt in enumerate(all_options)]
+            
+            multiple_choice.append({
+                "question": question,
+                "options": formatted_options,
+                "correct_answer": correct_letter,
+                "explanation": f"Based on the content, {term} is discussed as {correct_option.lower()}."
+            })
     
     # Generate True/False Questions
     true_false = []
     
-    # Use actual sentences from content for true statements
-    for i in range(min(num_tf, len(sentences))):
-        sentence = sentences[i]
-        
-        # Create true statement (directly from content)
-        if random.choice([True, False]) and len(true_false) < num_tf // 2:
-            # True statement
-            statement = sentence[:150] + "..." if len(sentence) > 150 else sentence
-            true_false.append({
-                "question": statement,
-                "correct_answer": "True",
-                "explanation": "This statement is directly supported by the provided content."
-            })
-        else:
-            # False statement (modify the sentence)
-            if key_terms:
-                term = random.choice(key_terms)
-                # Create a false statement by negation or modification
-                false_statement = f"{term} is not mentioned or discussed in the content"
-                if term.lower() in content.lower():
-                    false_statement = f"{term} has no significance to the topic discussed"
-                
+    # Only generate true/false if requested
+    if "true_false" in question_types and sentences:
+        for i in range(min(num_tf, len(sentences))):
+            sentence = sentences[i]
+            
+            # Adjust complexity based on difficulty
+            if difficulty == "easy":
+                statement = sentence[:100] + "..." if len(sentence) > 100 else sentence
                 true_false.append({
-                    "question": false_statement,
-                    "correct_answer": "False",
-                    "explanation": f"This is incorrect because {term} is actually discussed in the content as an important element."
+                    "question": statement,
+                    "correct_answer": "True",
+                    "explanation": "This statement is directly from the content."
                 })
+            elif difficulty == "medium":
+                statement = sentence[:150] + "..." if len(sentence) > 150 else sentence
+                true_false.append({
+                    "question": statement,
+                    "correct_answer": "True", 
+                    "explanation": "This statement is directly supported by the provided content."
+                })
+            else:  # hard
+                if key_terms:
+                    term = random.choice(key_terms)
+                    statement = f"The text implies that {term} functions as a significant component within the contextual framework presented"
+                    true_false.append({
+                        "question": statement,
+                        "correct_answer": "True",
+                        "explanation": f"While not explicitly stated in these exact words, the content supports this interpretation regarding {term}."
+                    })
     
-    # Ensure we have enough questions
-    while len(multiple_choice) < num_mc and key_terms:
-        remaining_terms = [t for t in key_terms if not any(t in q["question"] for q in multiple_choice)]
-        if not remaining_terms:
-            break
-        
-        term = remaining_terms[0]
-        multiple_choice.append({
-            "question": f"According to the content, what can be said about {term}?",
-            "options": [
-                f"A) {term} is a central topic in the discussion",
-                f"B) {term} is barely mentioned",
-                f"C) {term} is criticized in the text",
-                f"D) {term} is completely irrelevant"
-            ],
-            "correct_answer": "A",
-            "explanation": f"The content discusses {term} as part of the main topic."
-        })
+    # Return only requested question types
+    result = {}
+    if "multiple_choice" in question_types:
+        result["multiple_choice"] = multiple_choice[:num_mc]
+    if "true_false" in question_types:
+        result["true_false"] = true_false[:num_tf]
     
-    while len(true_false) < num_tf and sentences:
-        remaining_sentences = [s for s in sentences if not any(s[:50] in q["question"] for q in true_false)]
-        if not remaining_sentences:
-            break
-        
-        sentence = remaining_sentences[0][:100]
-        true_false.append({
-            "question": f"The content states that {sentence.lower()}",
-            "correct_answer": "True",
-            "explanation": "This statement reflects information presented in the content."
-        })
-    
-    return {
-        "multiple_choice": multiple_choice[:num_mc],
-        "true_false": true_false[:num_tf]
-    }
+    return result
 
 def render_quiz_form(questions_data):
     """
@@ -239,202 +200,154 @@ def render_quiz_form(questions_data):
         st.session_state.edited_questions = questions_data.copy()
     
     # Multiple Choice Questions
-    st.subheader("Multiple Choice Questions")
-    
     mc_questions = st.session_state.edited_questions.get('multiple_choice', [])
-    
-    for i, question in enumerate(mc_questions):
-        with st.expander(f"MC Question {i+1}", expanded=True):
-            col1, col2 = st.columns([3, 1])
-            
-            with col1:
-                # Editable question
-                new_question = st.text_area(
-                    "Question:", 
-                    value=question['question'],
-                    key=f"mc_q_{i}",
-                    height=100
-                )
+    if mc_questions:
+        st.subheader("Multiple Choice Questions")
+        
+        for i, q in enumerate(mc_questions):
+            with st.expander(f"Question {i+1}: {q['question'][:50]}..."):
+                # Question text
+                new_question = st.text_area(f"Question {i+1}", value=q['question'], key=f"mc_q_{i}")
                 
-                # Editable options
-                options = question.get('options', ['A)', 'B)', 'C)', 'D)'])
+                # Options
+                st.write("Options:")
                 new_options = []
-                for j, option in enumerate(options):
-                    new_option = st.text_input(
-                        f"Option {chr(65+j)}:",
-                        value=option,
-                        key=f"mc_opt_{i}_{j}"
-                    )
+                for j, option in enumerate(q['options']):
+                    new_option = st.text_input(f"Option {j+1}", value=option, key=f"mc_opt_{i}_{j}")
                     new_options.append(new_option)
                 
                 # Correct answer
-                correct_answer = st.selectbox(
-                    "Correct Answer:",
-                    options=['A', 'B', 'C', 'D'],
-                    index=['A', 'B', 'C', 'D'].index(question.get('correct_answer', 'A')),
-                    key=f"mc_correct_{i}"
-                )
+                correct_choices = ['A', 'B', 'C', 'D']
+                current_correct = q['correct_answer']
+                correct_index = correct_choices.index(current_correct) if current_correct in correct_choices else 0
+                new_correct = st.selectbox(f"Correct Answer", correct_choices, index=correct_index, key=f"mc_ans_{i}")
                 
                 # Explanation
-                explanation = st.text_area(
-                    "Explanation:",
-                    value=question.get('explanation', ''),
-                    key=f"mc_exp_{i}",
-                    height=80
-                )
-            
-            with col2:
-                st.write("**Actions:**")
-                if st.button(f"Delete Question {i+1}", key=f"del_mc_{i}", type="secondary"):
-                    mc_questions.pop(i)
+                new_explanation = st.text_area(f"Explanation", value=q['explanation'], key=f"mc_exp_{i}")
+                
+                # Update question in session state
+                st.session_state.edited_questions['multiple_choice'][i] = {
+                    'question': new_question,
+                    'options': new_options,
+                    'correct_answer': new_correct,
+                    'explanation': new_explanation
+                }
+                
+                # Delete button
+                if st.button(f"Delete Question {i+1}", key=f"del_mc_{i}"):
+                    del st.session_state.edited_questions['multiple_choice'][i]
                     st.rerun()
-            
-            # Update the question in session state
-            st.session_state.edited_questions['multiple_choice'][i] = {
-                'question': new_question,
-                'options': new_options,
-                'correct_answer': correct_answer,
-                'explanation': explanation
-            }
-    
-    # Add new MC question button
-    if st.button("➕ Add Multiple Choice Question"):
-        new_mc = {
-            'question': 'New question?',
-            'options': ['A) Option 1', 'B) Option 2', 'C) Option 3', 'D) Option 4'],
-            'correct_answer': 'A',
-            'explanation': 'Explanation here'
-        }
-        st.session_state.edited_questions['multiple_choice'].append(new_mc)
-        st.rerun()
-    
-    st.divider()
     
     # True/False Questions
-    st.subheader("True/False Questions")
-    
     tf_questions = st.session_state.edited_questions.get('true_false', [])
-    
-    for i, question in enumerate(tf_questions):
-        with st.expander(f"T/F Question {i+1}", expanded=True):
-            col1, col2 = st.columns([3, 1])
-            
-            with col1:
-                # Editable question
-                new_question = st.text_area(
-                    "Statement:", 
-                    value=question['question'],
-                    key=f"tf_q_{i}",
-                    height=100
-                )
+    if tf_questions:
+        st.subheader("True/False Questions")
+        
+        for i, q in enumerate(tf_questions):
+            with st.expander(f"T/F Question {i+1}: {q['question'][:50]}..."):
+                # Question text
+                new_question = st.text_area(f"T/F Question {i+1}", value=q['question'], key=f"tf_q_{i}")
                 
                 # Correct answer
-                correct_answer = st.selectbox(
-                    "Correct Answer:",
-                    options=['True', 'False'],
-                    index=['True', 'False'].index(question.get('correct_answer', 'True')),
-                    key=f"tf_correct_{i}"
-                )
+                current_correct = q['correct_answer']
+                tf_choices = ['True', 'False']
+                correct_index = tf_choices.index(current_correct) if current_correct in tf_choices else 0
+                new_correct = st.selectbox(f"Correct Answer", tf_choices, index=correct_index, key=f"tf_ans_{i}")
                 
                 # Explanation
-                explanation = st.text_area(
-                    "Explanation:",
-                    value=question.get('explanation', ''),
-                    key=f"tf_exp_{i}",
-                    height=80
-                )
-            
-            with col2:
-                st.write("**Actions:**")
-                if st.button(f"Delete Question {i+1}", key=f"del_tf_{i}", type="secondary"):
-                    tf_questions.pop(i)
+                new_explanation = st.text_area(f"Explanation", value=q['explanation'], key=f"tf_exp_{i}")
+                
+                # Update question in session state
+                st.session_state.edited_questions['true_false'][i] = {
+                    'question': new_question,
+                    'correct_answer': new_correct,
+                    'explanation': new_explanation
+                }
+                
+                # Delete button
+                if st.button(f"Delete T/F Question {i+1}", key=f"del_tf_{i}"):
+                    del st.session_state.edited_questions['true_false'][i]
                     st.rerun()
-            
-            # Update the question in session state
-            st.session_state.edited_questions['true_false'][i] = {
-                'question': new_question,
-                'correct_answer': correct_answer,
-                'explanation': explanation
-            }
-    
-    # Add new T/F question button
-    if st.button("➕ Add True/False Question"):
-        new_tf = {
-            'question': 'New statement to evaluate',
-            'correct_answer': 'True',
-            'explanation': 'Explanation here'
-        }
-        st.session_state.edited_questions['true_false'].append(new_tf)
-        st.rerun()
 
 def export_quiz(questions_data, format_type="txt"):
     """
-    Export quiz and answer key as downloadable file
+    Export quiz questions to downloadable format
     """
     if format_type == "txt":
-        content = "QUIZ QUESTIONS\n" + "=" * 50 + "\n\n"
-        
-        # Multiple Choice Questions
-        mc_questions = questions_data.get('multiple_choice', [])
-        if mc_questions:
-            content += "MULTIPLE CHOICE QUESTIONS:\n\n"
-            for i, q in enumerate(mc_questions):
-                content += f"{i+1}. {q['question']}\n"
-                for option in q['options']:
-                    content += f"   {option}\n"
-                content += f"   Correct Answer: {q['correct_answer']}\n"
-                content += f"   Explanation: {q['explanation']}\n\n"
-        
-        # True/False Questions
-        tf_questions = questions_data.get('true_false', [])
-        if tf_questions:
-            content += "\nTRUE/FALSE QUESTIONS:\n\n"
-            for i, q in enumerate(tf_questions):
-                content += f"{len(mc_questions) + i + 1}. {q['question']}\n"
-                content += f"   Correct Answer: {q['correct_answer']}\n"
-                content += f"   Explanation: {q['explanation']}\n\n"
-        
-        return content.encode('utf-8')
-    
+        return export_quiz_txt(questions_data)
     elif format_type == "docx":
-        doc = Document()
-        doc.add_heading('Quiz Questions', 0)
-        
-        # Multiple Choice Questions
-        mc_questions = questions_data.get('multiple_choice', [])
-        if mc_questions:
-            doc.add_heading('Multiple Choice Questions', level=1)
-            for i, q in enumerate(mc_questions):
-                p = doc.add_paragraph(f"{i+1}. {q['question']}")
-                p.style = 'Normal'
-                
-                for option in q['options']:
-                    doc.add_paragraph(f"   {option}", style='List Bullet')
-                
-                doc.add_paragraph(f"Correct Answer: {q['correct_answer']}", style='Normal')
-                doc.add_paragraph(f"Explanation: {q['explanation']}", style='Normal')
-                doc.add_paragraph()  # Empty line
-        
-        # True/False Questions
-        tf_questions = questions_data.get('true_false', [])
-        if tf_questions:
-            doc.add_heading('True/False Questions', level=1)
-            for i, q in enumerate(tf_questions):
-                doc.add_paragraph(f"{len(mc_questions) + i + 1}. {q['question']}")
-                doc.add_paragraph(f"Correct Answer: {q['correct_answer']}")
-                doc.add_paragraph(f"Explanation: {q['explanation']}")
-                doc.add_paragraph()  # Empty line
-        
-        # Save to bytes
-        doc_bytes = io.BytesIO()
-        doc.save(doc_bytes)
-        doc_bytes.seek(0)
-        return doc_bytes.getvalue()
+        return export_quiz_docx(questions_data)
+
+def export_quiz_txt(questions_data):
+    """
+    Export quiz to TXT format
+    """
+    content = "QUIZ QUESTIONS\n" + "="*50 + "\n\n"
+    
+    # Multiple Choice Questions
+    mc_questions = questions_data.get('multiple_choice', [])
+    if mc_questions:
+        content += "MULTIPLE CHOICE QUESTIONS:\n" + "-"*30 + "\n\n"
+        for i, q in enumerate(mc_questions):
+            content += f"{i+1}. {q['question']}\n"
+            for option in q['options']:
+                content += f"   {option}\n"
+            content += f"   Correct Answer: {q['correct_answer']}\n"
+            content += f"   Explanation: {q['explanation']}\n\n"
+    
+    # True/False Questions
+    tf_questions = questions_data.get('true_false', [])
+    if tf_questions:
+        content += "TRUE/FALSE QUESTIONS:\n" + "-"*30 + "\n\n"
+        for i, q in enumerate(tf_questions):
+            content += f"{len(mc_questions) + i + 1}. {q['question']}\n"
+            content += f"   Correct Answer: {q['correct_answer']}\n"
+            content += f"   Explanation: {q['explanation']}\n\n"
+    
+    return content.encode('utf-8')
+
+def export_quiz_docx(questions_data):
+    """
+    Export quiz to DOCX format
+    """
+    if Document is None:
+        raise Exception("python-docx is required for DOCX export. Please install it.")
+    
+    doc = Document()
+    doc.add_heading('Quiz Questions', 0)
+    
+    # Multiple Choice Questions
+    mc_questions = questions_data.get('multiple_choice', [])
+    if mc_questions:
+        doc.add_heading('Multiple Choice Questions', level=1)
+        for i, q in enumerate(mc_questions):
+            doc.add_paragraph(f"{i+1}. {q['question']}")
+            for option in q['options']:
+                doc.add_paragraph(f"    {option}", style='List Bullet')
+            doc.add_paragraph(f"Correct Answer: {q['correct_answer']}", style='Normal')
+            doc.add_paragraph(f"Explanation: {q['explanation']}", style='Normal')
+            doc.add_paragraph()  # Empty line
+    
+    # True/False Questions
+    tf_questions = questions_data.get('true_false', [])
+    if tf_questions:
+        doc.add_heading('True/False Questions', level=1)
+        for i, q in enumerate(tf_questions):
+            doc.add_paragraph(f"{len(mc_questions) + i + 1}. {q['question']}")
+            doc.add_paragraph(f"Correct Answer: {q['correct_answer']}")
+            doc.add_paragraph(f"Explanation: {q['explanation']}")
+            doc.add_paragraph()  # Empty line
+    
+    # Save to bytes
+    doc_bytes = io.BytesIO()
+    doc.save(doc_bytes)
+    doc_bytes.seek(0)
+    return doc_bytes.getvalue()
 
 # Main App
 def main():
     st.title("📚 AI Quiz Generator")
-    st.markdown("Upload PDF files or paste article text to generate quiz questions with AI assistance")
+    st.markdown("Upload PDF files or paste article text to generate customizable quiz questions with intelligent content analysis")
     
     # Sidebar for configuration
     with st.sidebar:
@@ -450,8 +363,35 @@ def main():
         st.write("📖 **Text Content**: Any educational or informational text")
         
         st.subheader("Quiz Settings")
-        num_mc = st.slider("Multiple Choice Questions", 1, 10, 5)
-        num_tf = st.slider("True/False Questions", 1, 10, 5)
+        
+        # Difficulty selection
+        difficulty = st.selectbox(
+            "Difficulty Level",
+            ["easy", "medium", "hard"],
+            index=1,
+            help="Easy: Simple vocabulary and basic questions\nMedium: Standard complexity\nHard: Advanced vocabulary and complex analysis"
+        )
+        
+        # Question type selection
+        st.write("**Question Types:**")
+        include_mc = st.checkbox("Multiple Choice Questions", value=True)
+        include_tf = st.checkbox("True/False Questions", value=True)
+        
+        # Question numbers (only show if type is selected)
+        if include_mc:
+            num_mc = st.slider("Number of Multiple Choice Questions", 1, 15, 5)
+        else:
+            num_mc = 0
+            
+        if include_tf:
+            num_tf = st.slider("Number of True/False Questions", 1, 15, 5)
+        else:
+            num_tf = 0
+        
+        # Validation
+        if not include_mc and not include_tf:
+            st.error("Please select at least one question type!")
+            st.stop()
     
     # Input method selection
     st.header("📝 Choose Input Method")
@@ -508,8 +448,21 @@ def main():
         # Generate questions
         if st.button("🎯 Generate Quiz Questions", type="primary"):
             try:
-                with st.spinner("Analyzing content and generating quiz questions..."):
-                    questions_data = generate_questions_with_local_ai(extracted_text, num_mc, num_tf)
+                # Determine question types to generate
+                question_types = []
+                if include_mc:
+                    question_types.append("multiple_choice")
+                if include_tf:
+                    question_types.append("true_false")
+                
+                with st.spinner(f"Analyzing content and generating {difficulty} level quiz questions..."):
+                    questions_data = generate_questions_with_local_ai(
+                        extracted_text, 
+                        num_mc, 
+                        num_tf, 
+                        difficulty, 
+                        question_types
+                    )
                 
                 st.success("✅ Quiz questions generated successfully!")
                 
@@ -521,41 +474,36 @@ def main():
             except Exception as e:
                 st.error(f"Error generating questions: {str(e)}")
     
-    # Display and edit questions
+    # Show questions if generated
     if st.session_state.get('questions_generated', False):
         render_quiz_form(st.session_state.edited_questions)
         
         # Export options
-        st.divider()
         st.header("📥 Export Quiz")
-        
-        col1, col2, col3 = st.columns(3)
+        col1, col2 = st.columns(2)
         
         with col1:
-            txt_content = export_quiz(st.session_state.edited_questions, "txt")
-            st.download_button(
-                label="📄 Download as TXT",
-                data=txt_content,
-                file_name="quiz_questions.txt",
-                mime="text/plain",
-                type="secondary"
-            )
+            if st.button("📄 Download as TXT"):
+                txt_data = export_quiz(st.session_state.edited_questions, "txt")
+                st.download_button(
+                    label="Download TXT File",
+                    data=txt_data,
+                    file_name="quiz.txt",
+                    mime="text/plain"
+                )
         
         with col2:
-            docx_content = export_quiz(st.session_state.edited_questions, "docx")
-            st.download_button(
-                label="📝 Download as DOCX",
-                data=docx_content,
-                file_name="quiz_questions.docx",
-                mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-                type="secondary"
-            )
-        
-        with col3:
-            if st.button("🔄 Reset Quiz", type="secondary"):
-                if 'original_questions' in st.session_state:
-                    st.session_state.edited_questions = st.session_state.original_questions.copy()
-                    st.rerun()
+            if st.button("📄 Download as DOCX"):
+                try:
+                    docx_data = export_quiz(st.session_state.edited_questions, "docx")
+                    st.download_button(
+                        label="Download DOCX File", 
+                        data=docx_data,
+                        file_name="quiz.docx",
+                        mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                    )
+                except Exception as e:
+                    st.error(f"Error creating DOCX: {str(e)}")
 
 if __name__ == "__main__":
     main()

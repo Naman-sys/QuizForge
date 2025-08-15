@@ -1,6 +1,6 @@
 # Overview
 
-This is a complete AI Quiz Generator application built with Python and Streamlit. The app processes both PDF files and article text to generate educational quiz questions using local intelligent content analysis without requiring external APIs. Teachers can upload PDF chapters or paste article content, generate multiple-choice and true/false questions, edit them interactively, and export the quiz with answer keys as downloadable files. The system uses the Mistral-7B-Instruct model for intelligent question generation with fallback content-based generation.
+This is a complete AI Quiz Generator application built with Python and Streamlit. The app processes both PDF files and article text to generate educational quiz questions using local intelligent content analysis without requiring external APIs. Teachers can upload PDF chapters or paste article content, customize difficulty levels and question types, generate multiple-choice and true/false questions, edit them interactively, and export the quiz with answer keys as downloadable files. The system uses the Mistral-7B-Instruct model for intelligent question generation with fallback content-based generation.
 
 # User Preferences
 
@@ -22,6 +22,9 @@ Preferred communication style: Simple, everyday language.
 - `create_intelligent_questions()` provides sophisticated local question generation
 - Advanced text processing with key term extraction and context analysis
 - Supports configurable numbers of multiple-choice and true/false questions
+- Three difficulty levels: Easy (simple vocabulary), Medium (standard), Hard (advanced analysis)
+- Flexible question type selection - choose multiple choice, true/false, or both
+- Adaptive question complexity based on difficulty settings
 - No external API dependencies - fully offline capable
 
 **Interactive Quiz Editor**
