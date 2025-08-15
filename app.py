@@ -33,18 +33,19 @@ def apply_custom_styling():
     /* Global Styles */
     .stApp {
         font-family: 'Nunito Sans', sans-serif;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
         min-height: 100vh;
     }
     
     /* Main Container */
     .main .block-container {
         padding-top: 2rem;
-        background: rgba(255, 255, 255, 0.95);
+        background: rgba(30, 30, 46, 0.95);
         border-radius: 20px;
         margin: 1rem;
-        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
         backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
     }
     
     /* Headings */
@@ -53,30 +54,33 @@ def apply_custom_styling():
         font-weight: 600 !important;
         text-transform: uppercase !important;
         letter-spacing: 1px !important;
-        color: #2c3e50 !important;
+        color: #ffffff !important;
     }
     
     h1 {
-        background: linear-gradient(135deg, #667eea, #764ba2);
+        background: linear-gradient(135deg, #00d4ff, #5b86e5);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         background-clip: text;
         font-size: 2.5rem !important;
         text-align: center;
         margin-bottom: 1rem !important;
+        text-shadow: 0 0 20px rgba(0, 212, 255, 0.3);
     }
     
     h2 {
-        color: #34495e !important;
-        border-bottom: 2px solid #667eea;
+        color: #ffffff !important;
+        border-bottom: 2px solid #00d4ff;
         padding-bottom: 0.5rem;
         margin-bottom: 1.5rem !important;
+        text-shadow: 0 0 10px rgba(0, 212, 255, 0.5);
     }
     
     /* Sidebar Styling */
     .css-1d391kg {
-        background: linear-gradient(180deg, #2c3e50 0%, #34495e 100%);
+        background: linear-gradient(180deg, #0f1419 0%, #1a1a2e 100%);
         border-radius: 0 20px 20px 0;
+        border-right: 1px solid rgba(0, 212, 255, 0.3);
     }
     
     .sidebar .sidebar-content {
@@ -84,28 +88,30 @@ def apply_custom_styling():
     }
     
     .sidebar h2, .sidebar h3, .sidebar label {
-        color: #ecf0f1 !important;
+        color: #ffffff !important;
     }
     
     /* Input Fields with Dark Mode Glow */
     .stTextInput input, .stTextArea textarea, .stSelectbox select {
-        border: 2px solid #e3e8ed !important;
+        border: 2px solid #2a2a3e !important;
         border-radius: 12px !important;
         padding: 12px !important;
         font-family: 'Nunito Sans', sans-serif !important;
         transition: all 0.3s ease !important;
-        background: rgba(255, 255, 255, 0.9) !important;
+        background: rgba(26, 26, 46, 0.8) !important;
+        color: #ffffff !important;
     }
     
     .stTextInput input:focus, .stTextArea textarea:focus, .stSelectbox select:focus {
-        border-color: #667eea !important;
-        box-shadow: 0 0 20px rgba(102, 126, 234, 0.3) !important;
+        border-color: #00d4ff !important;
+        box-shadow: 0 0 20px rgba(0, 212, 255, 0.4) !important;
         transform: translateY(-2px) !important;
+        background: rgba(26, 26, 46, 0.9) !important;
     }
     
     /* Buttons */
     .stButton button {
-        background: linear-gradient(135deg, #667eea, #764ba2) !important;
+        background: linear-gradient(135deg, #00d4ff, #5b86e5) !important;
         color: white !important;
         border: none !important;
         border-radius: 25px !important;
@@ -115,24 +121,24 @@ def apply_custom_styling():
         text-transform: uppercase !important;
         letter-spacing: 1px !important;
         transition: all 0.3s ease !important;
-        box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1) !important;
+        box-shadow: 0 8px 15px rgba(0, 212, 255, 0.3) !important;
     }
     
     .stButton button:hover {
         transform: translateY(-3px) !important;
-        box-shadow: 0 15px 25px rgba(0, 0, 0, 0.2) !important;
+        box-shadow: 0 15px 25px rgba(0, 212, 255, 0.5) !important;
     }
     
     /* Primary Button */
     .stButton[data-baseweb="button"][kind="primary"] button {
-        background: linear-gradient(135deg, #e74c3c, #c0392b) !important;
+        background: linear-gradient(135deg, #ff6b6b, #ee5a24) !important;
         animation: pulse 2s infinite;
     }
     
     @keyframes pulse {
-        0% { box-shadow: 0 8px 15px rgba(231, 76, 60, 0.3); }
-        50% { box-shadow: 0 15px 25px rgba(231, 76, 60, 0.5); }
-        100% { box-shadow: 0 8px 15px rgba(231, 76, 60, 0.3); }
+        0% { box-shadow: 0 8px 15px rgba(255, 107, 107, 0.3); }
+        50% { box-shadow: 0 15px 25px rgba(255, 107, 107, 0.5); }
+        100% { box-shadow: 0 8px 15px rgba(255, 107, 107, 0.3); }
     }
     
     /* Floating Action Buttons */
@@ -150,10 +156,10 @@ def apply_custom_styling():
         width: 60px;
         height: 60px;
         border-radius: 50%;
-        background: linear-gradient(135deg, #667eea, #764ba2);
+        background: linear-gradient(135deg, #00d4ff, #5b86e5);
         color: white;
         border: none;
-        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+        box-shadow: 0 8px 20px rgba(0, 212, 255, 0.4);
         cursor: pointer;
         transition: all 0.3s ease;
         display: flex;
@@ -164,37 +170,40 @@ def apply_custom_styling():
     
     .fab:hover {
         transform: scale(1.1);
-        box-shadow: 0 12px 25px rgba(0, 0, 0, 0.4);
+        box-shadow: 0 12px 25px rgba(0, 212, 255, 0.6);
     }
     
     /* Sticky Action Bar */
     .sticky-actions {
         position: sticky;
         top: 0;
-        background: rgba(255, 255, 255, 0.95);
+        background: rgba(26, 26, 46, 0.95);
         backdrop-filter: blur(10px);
         padding: 15px;
         border-radius: 15px;
         margin-bottom: 20px;
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        border: 1px solid rgba(0, 212, 255, 0.2);
         z-index: 100;
     }
     
     /* Animated Question Cards */
     .question-card {
-        background: linear-gradient(135deg, #f8f9ff, #ffffff);
+        background: linear-gradient(135deg, #1e1e2e, #252540);
         border-radius: 15px;
         padding: 20px;
         margin: 15px 0;
-        border-left: 5px solid #667eea;
-        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+        border-left: 5px solid #00d4ff;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
         transition: all 0.3s ease;
         animation: slideInUp 0.6s ease-out;
+        border: 1px solid rgba(0, 212, 255, 0.1);
     }
     
     .question-card:hover {
         transform: translateY(-5px);
-        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+        box-shadow: 0 15px 35px rgba(0, 212, 255, 0.2);
+        border-left-color: #ff6b6b;
     }
     
     @keyframes slideInUp {
@@ -210,7 +219,7 @@ def apply_custom_styling():
     
     /* Expanders */
     .streamlit-expanderHeader {
-        background: linear-gradient(135deg, #667eea, #764ba2) !important;
+        background: linear-gradient(135deg, #00d4ff, #5b86e5) !important;
         color: white !important;
         border-radius: 12px !important;
         font-family: 'Poppins', sans-serif !important;
@@ -220,80 +229,88 @@ def apply_custom_styling():
     }
     
     .streamlit-expanderContent {
-        background: #f8f9ff !important;
+        background: #1e1e2e !important;
         border-radius: 0 0 12px 12px !important;
-        border: 2px solid #667eea !important;
+        border: 2px solid #00d4ff !important;
         border-top: none !important;
     }
     
     /* Success/Error Messages */
     .stSuccess {
-        background: linear-gradient(135deg, #2ecc71, #27ae60) !important;
+        background: linear-gradient(135deg, #00d4aa, #01a3a4) !important;
         color: white !important;
         border-radius: 12px !important;
         font-weight: 600 !important;
+        box-shadow: 0 4px 15px rgba(0, 212, 170, 0.3) !important;
     }
     
     .stError {
-        background: linear-gradient(135deg, #e74c3c, #c0392b) !important;
+        background: linear-gradient(135deg, #ff6b6b, #ee5a24) !important;
         color: white !important;
         border-radius: 12px !important;
         font-weight: 600 !important;
+        box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3) !important;
     }
     
     /* Progress Bars */
     .stProgress .st-bo {
-        background: linear-gradient(135deg, #667eea, #764ba2) !important;
+        background: linear-gradient(135deg, #00d4ff, #5b86e5) !important;
         border-radius: 10px !important;
     }
     
     /* Sliders */
     .stSlider .st-bf {
-        background: linear-gradient(135deg, #667eea, #764ba2) !important;
+        background: linear-gradient(135deg, #00d4ff, #5b86e5) !important;
     }
     
     /* Checkboxes */
     .stCheckbox input:checked + span {
-        background: linear-gradient(135deg, #667eea, #764ba2) !important;
+        background: linear-gradient(135deg, #00d4ff, #5b86e5) !important;
     }
     
     /* Radio Buttons */
     .stRadio label {
-        background: rgba(255, 255, 255, 0.8) !important;
+        background: rgba(26, 26, 46, 0.8) !important;
         border-radius: 10px !important;
         padding: 10px !important;
         margin: 5px 0 !important;
         transition: all 0.3s ease !important;
+        color: #ffffff !important;
+        border: 1px solid rgba(0, 212, 255, 0.2) !important;
     }
     
     .stRadio label:hover {
-        background: rgba(102, 126, 234, 0.1) !important;
+        background: rgba(0, 212, 255, 0.1) !important;
         transform: translateX(5px) !important;
+        border-color: #00d4ff !important;
     }
     
     /* File Uploader */
     .stFileUploader {
-        background: linear-gradient(135deg, #f8f9ff, #ffffff) !important;
-        border: 2px dashed #667eea !important;
+        background: linear-gradient(135deg, #1e1e2e, #252540) !important;
+        border: 2px dashed #00d4ff !important;
         border-radius: 15px !important;
         padding: 30px !important;
         text-align: center !important;
         transition: all 0.3s ease !important;
+        color: #ffffff !important;
     }
     
     .stFileUploader:hover {
-        border-color: #764ba2 !important;
-        background: rgba(102, 126, 234, 0.05) !important;
+        border-color: #ff6b6b !important;
+        background: rgba(0, 212, 255, 0.1) !important;
+        box-shadow: 0 0 20px rgba(0, 212, 255, 0.2) !important;
     }
     
     /* Download Buttons */
     .download-section {
-        background: linear-gradient(135deg, #f8f9ff, #ffffff);
+        background: linear-gradient(135deg, #1e1e2e, #252540);
         border-radius: 15px;
         padding: 25px;
         margin: 20px 0;
-        border: 2px solid #e3e8ed;
+        border: 2px solid rgba(0, 212, 255, 0.3);
         text-align: center;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
     }
     
     /* Responsive Design */
@@ -799,16 +816,16 @@ def main():
         st.markdown("""
         <div class="sticky-actions">
             <div style="display: flex; justify-content: space-between; align-items: center;">
-                <div style="font-family: 'Poppins', sans-serif; font-weight: 600; color: #2c3e50;">
+                <div style="font-family: 'Poppins', sans-serif; font-weight: 600; color: #ffffff;">
                     Quiz Generated ✅ | Ready for Review & Export
                 </div>
                 <div style="display: flex; gap: 10px;">
                     <button onclick="window.scrollTo(0, document.querySelector('[data-testid=\\"stHeader\\"]').offsetTop)" 
-                            style="padding: 8px 16px; background: linear-gradient(135deg, #667eea, #764ba2); color: white; border: none; border-radius: 20px; cursor: pointer;">
+                            style="padding: 8px 16px; background: linear-gradient(135deg, #00d4ff, #5b86e5); color: white; border: none; border-radius: 20px; cursor: pointer; box-shadow: 0 4px 15px rgba(0, 212, 255, 0.3);">
                         📝 Edit Questions
                     </button>
                     <button onclick="window.scrollTo(0, document.body.scrollHeight)" 
-                            style="padding: 8px 16px; background: linear-gradient(135deg, #e74c3c, #c0392b); color: white; border: none; border-radius: 20px; cursor: pointer;">
+                            style="padding: 8px 16px; background: linear-gradient(135deg, #ff6b6b, #ee5a24); color: white; border: none; border-radius: 20px; cursor: pointer; box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);">
                         📥 Export Quiz
                     </button>
                 </div>
