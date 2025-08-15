@@ -141,37 +141,7 @@ def apply_custom_styling():
         100% { box-shadow: 0 8px 15px rgba(255, 107, 107, 0.3); }
     }
     
-    /* Floating Action Buttons */
-    .floating-actions {
-        position: fixed;
-        bottom: 30px;
-        right: 30px;
-        z-index: 1000;
-        display: flex;
-        flex-direction: column;
-        gap: 15px;
-    }
-    
-    .fab {
-        width: 60px;
-        height: 60px;
-        border-radius: 50%;
-        background: linear-gradient(135deg, #00d4ff, #5b86e5);
-        color: white;
-        border: none;
-        box-shadow: 0 8px 20px rgba(0, 212, 255, 0.4);
-        cursor: pointer;
-        transition: all 0.3s ease;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 20px;
-    }
-    
-    .fab:hover {
-        transform: scale(1.1);
-        box-shadow: 0 12px 25px rgba(0, 212, 255, 0.6);
-    }
+    /* Navigation buttons removed to fix React errors */
     
     /* Sticky Action Bar */
     .sticky-actions {
@@ -320,16 +290,7 @@ def apply_custom_styling():
             border-radius: 15px;
         }
         
-        .floating-actions {
-            bottom: 20px;
-            right: 20px;
-        }
-        
-        .fab {
-            width: 50px;
-            height: 50px;
-            font-size: 16px;
-        }
+        /* Responsive adjustments for removed floating buttons */
     }
     </style>
     """, unsafe_allow_html=True)
@@ -667,20 +628,7 @@ def main():
     # Apply custom styling
     apply_custom_styling()
     
-    # Floating Action Buttons
-    st.markdown("""
-    <div class="floating-actions">
-        <button class="fab" onclick="document.querySelector('[data-testid=\\"stButton\\"]').click()" title="Generate Quiz">
-            🎯
-        </button>
-        <button class="fab" onclick="window.scrollTo(0, document.body.scrollHeight)" title="Export Options">
-            📥
-        </button>
-        <button class="fab" onclick="window.scrollTo(0, 0)" title="Back to Top">
-            ⬆️
-        </button>
-    </div>
-    """, unsafe_allow_html=True)
+    # Navigation helper (removed floating buttons to fix React errors)
     
     st.title("📚 AI Quiz Generator")
     st.markdown("Upload PDF files or paste article text to generate customizable quiz questions with intelligent content analysis")
