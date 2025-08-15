@@ -707,8 +707,8 @@ def main():
         st.subheader("Quiz Settings")
         
         # Difficulty selection
-        difficulty = st.selectbox(
-            "Difficulty Level",
+        difficulty = st.radio(
+            "Difficulty Level:",
             ["easy", "medium", "hard"],
             index=1,
             help="Easy: Simple vocabulary and basic questions\nMedium: Standard complexity\nHard: Advanced vocabulary and complex analysis"
@@ -739,8 +739,7 @@ def main():
     st.header("📝 Choose Input Method")
     input_method = st.radio(
         "Select how you want to provide content:",
-        ["📄 Upload PDF File", "📊 Upload CSV Data", "📰 Paste Article Text"],
-        horizontal=True
+        ["📄 Upload PDF File", "📊 Upload CSV Data", "📰 Paste Article Text"]
     )
     
     extracted_text = None
