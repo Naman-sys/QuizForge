@@ -81,8 +81,8 @@ Preferred communication style: Simple, everyday language.
 # Recent Changes (August 15, 2025)
 
 - Completely rebuilt as a structured PDF Quiz Generator application
-- Implemented four core functions as requested: extract_text_from_pdf(), generate_questions_with_hf(), render_quiz_form(), export_quiz()
-- Upgraded to mistralai/Mistral-7B-Instruct-v0.2 model for better instruction following
+- Implemented four core functions as requested: extract_text_from_pdf(), generate_questions_with_local_ai(), render_quiz_form(), export_quiz()
+- Converted from API-dependent to completely offline system using intelligent content analysis
 - Added comprehensive PDF-only upload with pdfplumber integration
 - Created interactive quiz editing interface with add/delete/modify capabilities
 - Implemented dual export format support (TXT and DOCX) with proper formatting
@@ -92,3 +92,12 @@ Preferred communication style: Simple, everyday language.
 - Enhanced input method selection with dual support for PDF files and article text
 - Implemented text cleaning and validation for article content processing
 - Updated UI to support multiple content input methods with clear selection interface
+- Added difficulty levels (Easy, Medium, Hard) with adaptive question complexity
+- Implemented flexible question type selection (multiple choice, true/false, or both)
+- Added customizable question numbers (1-15 for each type)
+- Enhanced UI with modern styling: Poppins/Montserrat headings, Nunito Sans body text
+- Implemented floating action buttons for quick actions
+- Added dark mode glow effects on active inputs
+- Created sticky action bar for easy navigation
+- Animated question cards with slide/fade effects
+- Applied gradient backgrounds and modern button styling

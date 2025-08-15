@@ -24,6 +24,299 @@ st.set_page_config(
     layout="wide"
 )
 
+# Custom CSS for modern styling
+def apply_custom_styling():
+    st.markdown("""
+    <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Nunito+Sans:wght@300;400;500;600&display=swap');
+    
+    /* Global Styles */
+    .stApp {
+        font-family: 'Nunito Sans', sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+    }
+    
+    /* Main Container */
+    .main .block-container {
+        padding-top: 2rem;
+        background: rgba(255, 255, 255, 0.95);
+        border-radius: 20px;
+        margin: 1rem;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        backdrop-filter: blur(10px);
+    }
+    
+    /* Headings */
+    h1, h2, h3, .stSelectbox label, .stCheckbox label {
+        font-family: 'Poppins', sans-serif !important;
+        font-weight: 600 !important;
+        text-transform: uppercase !important;
+        letter-spacing: 1px !important;
+        color: #2c3e50 !important;
+    }
+    
+    h1 {
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        font-size: 2.5rem !important;
+        text-align: center;
+        margin-bottom: 1rem !important;
+    }
+    
+    h2 {
+        color: #34495e !important;
+        border-bottom: 2px solid #667eea;
+        padding-bottom: 0.5rem;
+        margin-bottom: 1.5rem !important;
+    }
+    
+    /* Sidebar Styling */
+    .css-1d391kg {
+        background: linear-gradient(180deg, #2c3e50 0%, #34495e 100%);
+        border-radius: 0 20px 20px 0;
+    }
+    
+    .sidebar .sidebar-content {
+        background: transparent;
+    }
+    
+    .sidebar h2, .sidebar h3, .sidebar label {
+        color: #ecf0f1 !important;
+    }
+    
+    /* Input Fields with Dark Mode Glow */
+    .stTextInput input, .stTextArea textarea, .stSelectbox select {
+        border: 2px solid #e3e8ed !important;
+        border-radius: 12px !important;
+        padding: 12px !important;
+        font-family: 'Nunito Sans', sans-serif !important;
+        transition: all 0.3s ease !important;
+        background: rgba(255, 255, 255, 0.9) !important;
+    }
+    
+    .stTextInput input:focus, .stTextArea textarea:focus, .stSelectbox select:focus {
+        border-color: #667eea !important;
+        box-shadow: 0 0 20px rgba(102, 126, 234, 0.3) !important;
+        transform: translateY(-2px) !important;
+    }
+    
+    /* Buttons */
+    .stButton button {
+        background: linear-gradient(135deg, #667eea, #764ba2) !important;
+        color: white !important;
+        border: none !important;
+        border-radius: 25px !important;
+        padding: 12px 30px !important;
+        font-family: 'Poppins', sans-serif !important;
+        font-weight: 600 !important;
+        text-transform: uppercase !important;
+        letter-spacing: 1px !important;
+        transition: all 0.3s ease !important;
+        box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1) !important;
+    }
+    
+    .stButton button:hover {
+        transform: translateY(-3px) !important;
+        box-shadow: 0 15px 25px rgba(0, 0, 0, 0.2) !important;
+    }
+    
+    /* Primary Button */
+    .stButton[data-baseweb="button"][kind="primary"] button {
+        background: linear-gradient(135deg, #e74c3c, #c0392b) !important;
+        animation: pulse 2s infinite;
+    }
+    
+    @keyframes pulse {
+        0% { box-shadow: 0 8px 15px rgba(231, 76, 60, 0.3); }
+        50% { box-shadow: 0 15px 25px rgba(231, 76, 60, 0.5); }
+        100% { box-shadow: 0 8px 15px rgba(231, 76, 60, 0.3); }
+    }
+    
+    /* Floating Action Buttons */
+    .floating-actions {
+        position: fixed;
+        bottom: 30px;
+        right: 30px;
+        z-index: 1000;
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+    }
+    
+    .fab {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        color: white;
+        border: none;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 20px;
+    }
+    
+    .fab:hover {
+        transform: scale(1.1);
+        box-shadow: 0 12px 25px rgba(0, 0, 0, 0.4);
+    }
+    
+    /* Sticky Action Bar */
+    .sticky-actions {
+        position: sticky;
+        top: 0;
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        padding: 15px;
+        border-radius: 15px;
+        margin-bottom: 20px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        z-index: 100;
+    }
+    
+    /* Animated Question Cards */
+    .question-card {
+        background: linear-gradient(135deg, #f8f9ff, #ffffff);
+        border-radius: 15px;
+        padding: 20px;
+        margin: 15px 0;
+        border-left: 5px solid #667eea;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+        transition: all 0.3s ease;
+        animation: slideInUp 0.6s ease-out;
+    }
+    
+    .question-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+    }
+    
+    @keyframes slideInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    /* Expanders */
+    .streamlit-expanderHeader {
+        background: linear-gradient(135deg, #667eea, #764ba2) !important;
+        color: white !important;
+        border-radius: 12px !important;
+        font-family: 'Poppins', sans-serif !important;
+        font-weight: 600 !important;
+        text-transform: uppercase !important;
+        letter-spacing: 1px !important;
+    }
+    
+    .streamlit-expanderContent {
+        background: #f8f9ff !important;
+        border-radius: 0 0 12px 12px !important;
+        border: 2px solid #667eea !important;
+        border-top: none !important;
+    }
+    
+    /* Success/Error Messages */
+    .stSuccess {
+        background: linear-gradient(135deg, #2ecc71, #27ae60) !important;
+        color: white !important;
+        border-radius: 12px !important;
+        font-weight: 600 !important;
+    }
+    
+    .stError {
+        background: linear-gradient(135deg, #e74c3c, #c0392b) !important;
+        color: white !important;
+        border-radius: 12px !important;
+        font-weight: 600 !important;
+    }
+    
+    /* Progress Bars */
+    .stProgress .st-bo {
+        background: linear-gradient(135deg, #667eea, #764ba2) !important;
+        border-radius: 10px !important;
+    }
+    
+    /* Sliders */
+    .stSlider .st-bf {
+        background: linear-gradient(135deg, #667eea, #764ba2) !important;
+    }
+    
+    /* Checkboxes */
+    .stCheckbox input:checked + span {
+        background: linear-gradient(135deg, #667eea, #764ba2) !important;
+    }
+    
+    /* Radio Buttons */
+    .stRadio label {
+        background: rgba(255, 255, 255, 0.8) !important;
+        border-radius: 10px !important;
+        padding: 10px !important;
+        margin: 5px 0 !important;
+        transition: all 0.3s ease !important;
+    }
+    
+    .stRadio label:hover {
+        background: rgba(102, 126, 234, 0.1) !important;
+        transform: translateX(5px) !important;
+    }
+    
+    /* File Uploader */
+    .stFileUploader {
+        background: linear-gradient(135deg, #f8f9ff, #ffffff) !important;
+        border: 2px dashed #667eea !important;
+        border-radius: 15px !important;
+        padding: 30px !important;
+        text-align: center !important;
+        transition: all 0.3s ease !important;
+    }
+    
+    .stFileUploader:hover {
+        border-color: #764ba2 !important;
+        background: rgba(102, 126, 234, 0.05) !important;
+    }
+    
+    /* Download Buttons */
+    .download-section {
+        background: linear-gradient(135deg, #f8f9ff, #ffffff);
+        border-radius: 15px;
+        padding: 25px;
+        margin: 20px 0;
+        border: 2px solid #e3e8ed;
+        text-align: center;
+    }
+    
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .main .block-container {
+            margin: 0.5rem;
+            border-radius: 15px;
+        }
+        
+        .floating-actions {
+            bottom: 20px;
+            right: 20px;
+        }
+        
+        .fab {
+            width: 50px;
+            height: 50px;
+            font-size: 16px;
+        }
+    }
+    </style>
+    """, unsafe_allow_html=True)
+
 def extract_text_from_pdf(pdf_file):
     """
     Extract clean, readable text from uploaded PDF file using pdfplumber
@@ -192,7 +485,7 @@ def create_intelligent_questions(content, num_mc=5, num_tf=5, difficulty="medium
 
 def render_quiz_form(questions_data):
     """
-    Render the quiz questions in an editable form
+    Render the quiz questions in an editable form with enhanced styling
     """
     st.header("📝 Generated Quiz Questions")
     
@@ -205,6 +498,8 @@ def render_quiz_form(questions_data):
         st.subheader("Multiple Choice Questions")
         
         for i, q in enumerate(mc_questions):
+            # Animated question card
+            st.markdown(f'<div class="question-card">', unsafe_allow_html=True)
             with st.expander(f"Question {i+1}: {q['question'][:50]}..."):
                 # Question text
                 new_question = st.text_area(f"Question {i+1}", value=q['question'], key=f"mc_q_{i}")
@@ -237,6 +532,8 @@ def render_quiz_form(questions_data):
                 if st.button(f"Delete Question {i+1}", key=f"del_mc_{i}"):
                     del st.session_state.edited_questions['multiple_choice'][i]
                     st.rerun()
+            
+            st.markdown('</div>', unsafe_allow_html=True)
     
     # True/False Questions
     tf_questions = st.session_state.edited_questions.get('true_false', [])
@@ -244,6 +541,8 @@ def render_quiz_form(questions_data):
         st.subheader("True/False Questions")
         
         for i, q in enumerate(tf_questions):
+            # Animated question card
+            st.markdown(f'<div class="question-card">', unsafe_allow_html=True)
             with st.expander(f"T/F Question {i+1}: {q['question'][:50]}..."):
                 # Question text
                 new_question = st.text_area(f"T/F Question {i+1}", value=q['question'], key=f"tf_q_{i}")
@@ -268,6 +567,8 @@ def render_quiz_form(questions_data):
                 if st.button(f"Delete T/F Question {i+1}", key=f"del_tf_{i}"):
                     del st.session_state.edited_questions['true_false'][i]
                     st.rerun()
+            
+            st.markdown('</div>', unsafe_allow_html=True)
 
 def export_quiz(questions_data, format_type="txt"):
     """
@@ -346,6 +647,24 @@ def export_quiz_docx(questions_data):
 
 # Main App
 def main():
+    # Apply custom styling
+    apply_custom_styling()
+    
+    # Floating Action Buttons
+    st.markdown("""
+    <div class="floating-actions">
+        <button class="fab" onclick="document.querySelector('[data-testid=\\"stButton\\"]').click()" title="Generate Quiz">
+            🎯
+        </button>
+        <button class="fab" onclick="window.scrollTo(0, document.body.scrollHeight)" title="Export Options">
+            📥
+        </button>
+        <button class="fab" onclick="window.scrollTo(0, 0)" title="Back to Top">
+            ⬆️
+        </button>
+    </div>
+    """, unsafe_allow_html=True)
+    
     st.title("📚 AI Quiz Generator")
     st.markdown("Upload PDF files or paste article text to generate customizable quiz questions with intelligent content analysis")
     
@@ -476,9 +795,31 @@ def main():
     
     # Show questions if generated
     if st.session_state.get('questions_generated', False):
+        # Sticky Action Bar
+        st.markdown("""
+        <div class="sticky-actions">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div style="font-family: 'Poppins', sans-serif; font-weight: 600; color: #2c3e50;">
+                    Quiz Generated ✅ | Ready for Review & Export
+                </div>
+                <div style="display: flex; gap: 10px;">
+                    <button onclick="window.scrollTo(0, document.querySelector('[data-testid=\\"stHeader\\"]').offsetTop)" 
+                            style="padding: 8px 16px; background: linear-gradient(135deg, #667eea, #764ba2); color: white; border: none; border-radius: 20px; cursor: pointer;">
+                        📝 Edit Questions
+                    </button>
+                    <button onclick="window.scrollTo(0, document.body.scrollHeight)" 
+                            style="padding: 8px 16px; background: linear-gradient(135deg, #e74c3c, #c0392b); color: white; border: none; border-radius: 20px; cursor: pointer;">
+                        📥 Export Quiz
+                    </button>
+                </div>
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
+        
         render_quiz_form(st.session_state.edited_questions)
         
-        # Export options
+        # Export options with enhanced styling
+        st.markdown('<div class="download-section">', unsafe_allow_html=True)
         st.header("📥 Export Quiz")
         col1, col2 = st.columns(2)
         
@@ -504,6 +845,8 @@ def main():
                     )
                 except Exception as e:
                     st.error(f"Error creating DOCX: {str(e)}")
+        
+        st.markdown('</div>', unsafe_allow_html=True)
 
 if __name__ == "__main__":
     main()
