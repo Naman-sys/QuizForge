@@ -1,6 +1,6 @@
 # Overview
 
-This is a complete PDF Quiz Generator application built with Python and Streamlit. The app extracts text from uploaded PDF files and uses Hugging Face's AI models to generate educational quiz questions. Teachers can upload PDF chapters, generate multiple-choice and true/false questions, edit them interactively, and export the quiz with answer keys as downloadable files. The system uses the Mistral-7B-Instruct model for intelligent question generation with fallback content-based generation.
+This is a complete AI Quiz Generator application built with Python and Streamlit. The app processes both PDF files and article text to generate educational quiz questions using Hugging Face's AI models. Teachers can upload PDF chapters or paste article content, generate multiple-choice and true/false questions, edit them interactively, and export the quiz with answer keys as downloadable files. The system uses the Mistral-7B-Instruct model for intelligent question generation with fallback content-based generation.
 
 # User Preferences
 
@@ -10,9 +10,11 @@ Preferred communication style: Simple, everyday language.
 
 ## Core Components
 
-**PDF Processing Layer**
-- `extract_text_from_pdf()` function uses pdfplumber for clean text extraction
+**Content Processing Layer**
+- `extract_text_from_pdf()` function uses pdfplumber for clean PDF text extraction
+- `extract_text_from_article()` function processes and validates article text input
 - Handles text-based PDFs and provides clear error messages for problematic files
+- Text cleaning and normalization for article content with minimum length validation
 - Graceful error handling for missing dependencies and extraction failures
 
 **AI Question Generation**
@@ -82,3 +84,7 @@ Preferred communication style: Simple, everyday language.
 - Implemented dual export format support (TXT and DOCX) with proper formatting
 - Added intelligent fallback question generation based on content analysis
 - Structured the application for educational use with teacher-focused features
+- Added article text input functionality for web content, blogs, and documents
+- Enhanced input method selection with dual support for PDF files and article text
+- Implemented text cleaning and validation for article content processing
+- Updated UI to support multiple content input methods with clear selection interface

@@ -44,6 +44,26 @@ def extract_text_from_pdf(pdf_file):
     except Exception as e:
         raise Exception(f"Error extracting text from PDF: {str(e)}")
 
+def extract_text_from_article(article_text):
+    """
+    Process and clean article text for quiz generation
+    """
+    if not article_text or not article_text.strip():
+        raise Exception("Article text cannot be empty.")
+    
+    # Basic text cleaning
+    cleaned_text = article_text.strip()
+    
+    # Remove excessive whitespace and normalize line breaks
+    import re
+    cleaned_text = re.sub(r'\n\s*\n', '\n\n', cleaned_text)
+    cleaned_text = re.sub(r' +', ' ', cleaned_text)
+    
+    if len(cleaned_text) < 100:
+        raise Exception("Article text is too short. Please provide at least 100 characters for meaningful quiz generation.")
+    
+    return cleaned_text
+
 def generate_questions_with_hf(text_content, num_mc=5, num_tf=5):
     """
     Generate quiz questions using Hugging Face Inference API
@@ -374,8 +394,8 @@ def export_quiz(questions_data, format_type="txt"):
 
 # Main App
 def main():
-    st.title("📚 PDF Quiz Generator")
-    st.markdown("Upload a PDF chapter and generate quiz questions with AI assistance")
+    st.title("📚 AI Quiz Generator")
+    st.markdown("Upload PDF files or paste article text to generate quiz questions with AI assistance")
     
     # Sidebar for configuration
     with st.sidebar:
@@ -389,48 +409,82 @@ def main():
             st.error("❌ HUGGINGFACE_API_KEY not found")
             st.info("Please set your Hugging Face API key in the environment variables.")
         
+        st.subheader("Supported Content Types")
+        st.write("📄 **PDF Files**: Chapters, research papers, textbooks")
+        st.write("📰 **Articles**: Blog posts, news articles, web content")
+        st.write("📖 **Text Content**: Any educational or informational text")
+        
         st.subheader("Quiz Settings")
         num_mc = st.slider("Multiple Choice Questions", 1, 10, 5)
         num_tf = st.slider("True/False Questions", 1, 10, 5)
     
-    # File upload
-    st.header("📄 Upload PDF Chapter")
-    uploaded_file = st.file_uploader(
-        "Choose a PDF file:",
-        type=['pdf'],
-        help="Upload a PDF containing a chapter or text content for quiz generation"
+    # Input method selection
+    st.header("📝 Choose Input Method")
+    input_method = st.radio(
+        "Select how you want to provide content:",
+        ["📄 Upload PDF File", "📰 Paste Article Text"],
+        horizontal=True
     )
     
-    if uploaded_file is not None:
-        try:
-            # Extract text
-            with st.spinner("Extracting text from PDF..."):
-                extracted_text = extract_text_from_pdf(uploaded_file)
-            
-            st.success(f"✅ Text extracted successfully! ({len(extracted_text)} characters)")
-            
-            # Show preview
-            with st.expander("📖 Preview Extracted Text"):
-                st.text_area("Extracted Content:", extracted_text[:1000] + "..." if len(extracted_text) > 1000 else extracted_text, height=200, disabled=True)
-            
-            # Generate questions
-            if st.button("🎯 Generate Quiz Questions", type="primary"):
-                try:
-                    with st.spinner("Generating quiz questions with AI..."):
-                        questions_data = generate_questions_with_hf(extracted_text, num_mc, num_tf)
-                    
-                    st.success("✅ Quiz questions generated successfully!")
-                    
-                    # Store in session state
-                    st.session_state.questions_generated = True
-                    st.session_state.original_questions = questions_data
-                    st.session_state.edited_questions = questions_data.copy()
-                    
-                except Exception as e:
-                    st.error(f"Error generating questions: {str(e)}")
+    extracted_text = None
+    
+    if input_method == "📄 Upload PDF File":
+        st.subheader("PDF File Upload")
+        uploaded_file = st.file_uploader(
+            "Choose a PDF file:",
+            type=['pdf'],
+            help="Upload a PDF containing a chapter or text content for quiz generation"
+        )
         
-        except Exception as e:
-            st.error(f"Error processing PDF: {str(e)}")
+        if uploaded_file is not None:
+            try:
+                # Extract text
+                with st.spinner("Extracting text from PDF..."):
+                    extracted_text = extract_text_from_pdf(uploaded_file)
+                
+                st.success(f"✅ Text extracted successfully! ({len(extracted_text)} characters)")
+                
+            except Exception as e:
+                st.error(f"Error processing PDF: {str(e)}")
+    
+    elif input_method == "📰 Paste Article Text":
+        st.subheader("Article Text Input")
+        article_text = st.text_area(
+            "Paste your article content here:",
+            height=300,
+            placeholder="Paste the article text, blog post, or any written content you want to create quiz questions from...",
+            help="You can paste articles from websites, documents, or any text content"
+        )
+        
+        if article_text:
+            try:
+                extracted_text = extract_text_from_article(article_text)
+                st.success(f"✅ Article processed successfully! ({len(extracted_text)} characters)")
+                
+            except Exception as e:
+                st.error(f"Error processing article: {str(e)}")
+    
+    # Show preview and generate questions if text is available
+    if extracted_text:
+        # Show preview
+        with st.expander("📖 Preview Content"):
+            st.text_area("Content:", extracted_text[:1000] + "..." if len(extracted_text) > 1000 else extracted_text, height=200, disabled=True)
+        
+        # Generate questions
+        if st.button("🎯 Generate Quiz Questions", type="primary"):
+            try:
+                with st.spinner("Generating quiz questions with AI..."):
+                    questions_data = generate_questions_with_hf(extracted_text, num_mc, num_tf)
+                
+                st.success("✅ Quiz questions generated successfully!")
+                
+                # Store in session state
+                st.session_state.questions_generated = True
+                st.session_state.original_questions = questions_data
+                st.session_state.edited_questions = questions_data.copy()
+                
+            except Exception as e:
+                st.error(f"Error generating questions: {str(e)}")
     
     # Display and edit questions
     if st.session_state.get('questions_generated', False):

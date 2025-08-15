@@ -1,16 +1,19 @@
-# PDF Quiz Generator
+# AI Quiz Generator
 
-A complete Python Streamlit application that extracts text from PDF files and generates quiz questions using Hugging Face AI models.
+A complete Python Streamlit application that processes PDF files and article text to generate quiz questions using Hugging Face AI models.
 
 ## Features
 
-- **PDF Text Extraction**: Uses pdfplumber to extract clean, readable text from PDF files
+- **Multiple Input Methods**: 
+  - PDF text extraction using pdfplumber
+  - Direct article text input for web content, blogs, and documents
 - **AI-Powered Question Generation**: Leverages Hugging Face Inference API (Mistral-7B-Instruct) to create:
   - Multiple-choice questions (4 options each)
   - True/False questions
 - **Interactive Editing**: Teachers can view, edit, or delete any generated question
 - **Export Functionality**: Download quiz + answer key as .txt or .docx files
 - **Responsive UI**: Clean, minimal interface built with Streamlit
+- **Content Processing**: Intelligent text cleaning and validation
 
 ## Project Structure
 
@@ -25,6 +28,7 @@ A complete Python Streamlit application that extracts text from PDF files and ge
 ## Core Functions
 
 - `extract_text_from_pdf()` - Extracts text from uploaded PDF files
+- `extract_text_from_article()` - Processes and cleans article text input
 - `generate_questions_with_hf()` - Generates quiz questions using Hugging Face API
 - `render_quiz_form()` - Renders editable quiz interface
 - `export_quiz()` - Exports quiz to downloadable formats
@@ -95,18 +99,29 @@ streamlit run app.py
 
 ## Usage
 
-1. **Upload PDF**: Click "Choose a PDF file" and select your chapter/document
-2. **Configure Settings**: Use the sidebar to set the number of multiple-choice and true/false questions
-3. **Generate Questions**: Click "Generate Quiz Questions" to create AI-powered questions
-4. **Edit Questions**: Review and modify questions, options, correct answers, and explanations
-5. **Export**: Download your quiz as a TXT or DOCX file
+1. **Choose Input Method**: Select either "Upload PDF File" or "Paste Article Text"
+2. **Provide Content**: 
+   - Upload a PDF file, or
+   - Paste article text directly into the text area
+3. **Configure Settings**: Use the sidebar to set the number of multiple-choice and true/false questions
+4. **Generate Questions**: Click "Generate Quiz Questions" to create AI-powered questions
+5. **Edit Questions**: Review and modify questions, options, correct answers, and explanations
+6. **Export**: Download your quiz as a TXT or DOCX file
 
-## Supported PDF Types
+## Supported Content Types
 
+**PDF Files:**
 - Text-based PDFs (best results)
 - Scanned PDFs with OCR text layer
 - Academic papers and textbook chapters
 - Any PDF with extractable text content
+
+**Article Text:**
+- Blog posts and web articles
+- News articles and reports
+- Educational content and tutorials
+- Research papers and documentation
+- Any text content (minimum 100 characters)
 
 ## AI Models Used
 
