@@ -73,8 +73,8 @@ def generate_questions_with_hf(text_content, num_mc=5, num_tf=5):
     if not hf_token:
         raise Exception("HUGGINGFACE_API_KEY environment variable is required")
     
-    # Use GPT-2 model which is widely available
-    api_url = "https://api-inference.huggingface.co/models/gpt2"
+    # Use Mistral model for better instruction following
+    api_url = "https://api-inference.huggingface.co/models/mistralai/Mistral-7B-Instruct-v0.2"
     headers = {"Authorization": f"Bearer {hf_token}"}
     
     # Truncate content to avoid token limits
