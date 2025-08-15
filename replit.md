@@ -1,6 +1,6 @@
 # Overview
 
-This project is a quiz generation application that processes uploaded documents and uses AI to create educational quizzes from the content. The system extracts text from various file formats (TXT, PDF, DOCX) and leverages Hugging Face's Inference API to generate customized quizzes with different difficulty levels and question types. It's designed as a Streamlit web application for easy user interaction and file upload functionality.
+This is a complete PDF Quiz Generator application built with Python and Streamlit. The app extracts text from uploaded PDF files and uses Hugging Face's AI models to generate educational quiz questions. Teachers can upload PDF chapters, generate multiple-choice and true/false questions, edit them interactively, and export the quiz with answer keys as downloadable files. The system uses the Mistral-7B-Instruct model for intelligent question generation with fallback content-based generation.
 
 # User Preferences
 
@@ -10,22 +10,27 @@ Preferred communication style: Simple, everyday language.
 
 ## Core Components
 
-**File Processing Layer**
-- `FileProcessor` class handles document parsing and text extraction
-- Supports multiple file formats: TXT, PDF (via PyPDF2), and DOCX (via python-docx)
-- Implements graceful error handling with encoding fallbacks for text files
-- Uses optional imports to handle missing dependencies without breaking the application
+**PDF Processing Layer**
+- `extract_text_from_pdf()` function uses pdfplumber for clean text extraction
+- Handles text-based PDFs and provides clear error messages for problematic files
+- Graceful error handling for missing dependencies and extraction failures
 
-**AI Integration Layer**
-- `QuizGenerator` class manages Hugging Face Inference API interactions
-- Uses microsoft/DialoGPT-medium model for quiz generation
-- Implements structured JSON response format with fallback content generation
-- Includes temperature control (0.7) for balanced creativity and accuracy
+**AI Question Generation**
+- `generate_questions_with_hf()` function integrates with Hugging Face Inference API
+- Uses mistralai/Mistral-7B-Instruct-v0.2 model for intelligent question generation
+- `create_fallback_questions()` provides content-based question generation when AI responses need formatting
+- Supports configurable numbers of multiple-choice and true/false questions
 
-**Web Interface**
-- Built on Streamlit framework for rapid web application development
-- Provides file upload functionality with drag-and-drop support
-- Offers interactive controls for quiz customization (difficulty, question count, types)
+**Interactive Quiz Editor**
+- `render_quiz_form()` function creates an editable interface for generated questions
+- Teachers can view, edit, delete, and add new questions with real-time updates
+- Supports both multiple-choice (4 options) and true/false question types
+- Includes explanation fields for educational value
+
+**Export Functionality**
+- `export_quiz()` function generates downloadable quiz files
+- Supports both TXT and DOCX formats with proper formatting
+- Includes questions, options, correct answers, and explanations
 
 ## Design Patterns
 
@@ -47,21 +52,33 @@ Preferred communication style: Simple, everyday language.
 # External Dependencies
 
 ## AI Services
-- **Hugging Face Inference API**: Primary service for quiz generation using microsoft/DialoGPT-medium model
-- Requires API key configuration via environment variables
-- Includes fallback quiz generation when API responses aren't structured JSON
+- **Hugging Face Inference API**: Primary service using mistralai/Mistral-7B-Instruct-v0.2 model
+- Requires HUGGINGFACE_API_KEY environment variable for authentication
+- Advanced JSON parsing with intelligent fallback for non-JSON responses
+- Content-based question generation when API calls fail
 
 ## File Processing Libraries
-- **PyPDF2**: PDF text extraction (optional dependency)
-- **python-docx**: Microsoft Word document processing (optional dependency)
-- Both libraries are gracefully handled if not installed
+- **pdfplumber**: Primary PDF text extraction library with excellent text quality
+- **python-docx**: Export functionality for DOCX quiz formats
+- **requests**: HTTP client for Hugging Face API interactions
 
 ## Web Framework
 - **Streamlit**: Main web application framework for user interface
 - Provides built-in file upload, form controls, and session management
 
 ## Python Standard Libraries
-- **json**: Response parsing and data serialization
-- **os**: Environment variable access and file system operations
-- **io**: File stream handling for uploaded content
-- **typing**: Type hints for better code documentation
+- **json**: API response parsing and data serialization
+- **os**: Environment variable access for API key management
+- **io**: File stream handling for downloads and uploads
+- **streamlit**: Complete web application framework with built-in components
+
+# Recent Changes (August 15, 2025)
+
+- Completely rebuilt as a structured PDF Quiz Generator application
+- Implemented four core functions as requested: extract_text_from_pdf(), generate_questions_with_hf(), render_quiz_form(), export_quiz()
+- Upgraded to mistralai/Mistral-7B-Instruct-v0.2 model for better instruction following
+- Added comprehensive PDF-only upload with pdfplumber integration
+- Created interactive quiz editing interface with add/delete/modify capabilities
+- Implemented dual export format support (TXT and DOCX) with proper formatting
+- Added intelligent fallback question generation based on content analysis
+- Structured the application for educational use with teacher-focused features
