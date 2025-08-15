@@ -74,7 +74,7 @@ def generate_questions_with_hf(text_content, num_mc=5, num_tf=5):
         raise Exception("HUGGINGFACE_API_KEY environment variable is required")
     
     # Use Mistral model for better instruction following
-    api_url = "https://api-inference.huggingface.co/models/mistralai/Mistral-7B-Instruct-v0.2"
+    api_url = "https://api-inference.huggingface.co/models/mistralai/Mistral-7B-Instruct-v0.1"
     headers = {"Authorization": f"Bearer {hf_token}"}
     
     # Truncate content to avoid token limits
