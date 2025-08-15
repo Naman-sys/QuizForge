@@ -1,6 +1,6 @@
 # Overview
 
-This is a complete AI Quiz Generator application built with Python and Streamlit. The app processes both PDF files and article text to generate educational quiz questions using local intelligent content analysis without requiring external APIs. Teachers can upload PDF chapters or paste article content, customize difficulty levels and question types, generate multiple-choice and true/false questions, edit them interactively, and export the quiz with answer keys as downloadable files. The system uses the Mistral-7B-Instruct model for intelligent question generation with fallback content-based generation.
+This is a complete AI Quiz Generator application built with Python and Streamlit. The app processes PDF files, CSV data, and article text to generate educational quiz questions using Google's advanced Gemini AI. Teachers can upload PDF chapters or paste article content, customize difficulty levels and question types, generate multiple-choice and true/false questions, edit them interactively, and export the quiz with answer keys as downloadable files. The system uses the Mistral-7B-Instruct model for intelligent question generation with fallback content-based generation.
 
 # User Preferences
 
@@ -19,15 +19,15 @@ Preferred communication style: Simple, everyday language.
 - Text cleaning and normalization for article content with minimum length validation
 - Graceful error handling for missing dependencies and extraction failures
 
-**Local AI Question Generation**
-- `generate_questions_with_local_ai()` function uses intelligent content analysis
-- `create_intelligent_questions()` provides sophisticated local question generation
-- Advanced text processing with key term extraction and context analysis
+**Gemini AI Question Generation**
+- `generate_questions_with_gemini_ai()` function uses Google's Gemini AI
+- `GeminiQuizGenerator` class provides sophisticated AI-powered question generation
+- Advanced natural language understanding and content analysis
 - Supports configurable numbers of multiple-choice and true/false questions
 - Three difficulty levels: Easy (simple vocabulary), Medium (standard), Hard (advanced analysis)
 - Flexible question type selection - choose multiple choice, true/false, or both
 - Adaptive question complexity based on difficulty settings
-- No external API dependencies - fully offline capable
+- Fallback to local generation if Gemini API is unavailable
 
 **Interactive Quiz Editor**
 - `render_quiz_form()` function creates an editable interface for generated questions
@@ -59,17 +59,17 @@ Preferred communication style: Simple, everyday language.
 
 # External Dependencies
 
-## Local AI Services
-- **Local Content Analysis**: Advanced text processing and question generation
-- **Key Term Extraction**: Identifies important concepts and terminology
-- **Context Analysis**: Creates relevant questions based on content structure
-- **No External Dependencies**: Fully offline operation without API requirements
+## AI Services
+- **Gemini AI**: Google's advanced language model for high-quality question generation
+- **Content Analysis**: Sophisticated understanding of text structure and meaning
+- **Context Awareness**: Creates relevant questions based on content comprehension
+- **Fallback Support**: Local generation backup when API is unavailable
 
 ## File Processing Libraries
 - **pdfplumber**: Primary PDF text extraction library with excellent text quality
 - **pandas**: CSV data processing and analysis for generating data-based questions
 - **python-docx**: Export functionality for DOCX quiz formats
-- **requests**: HTTP client for Hugging Face API interactions
+- **google-genai**: Official Google Gemini AI client library
 
 ## Web Framework
 - **Streamlit**: Main web application framework for user interface
@@ -82,6 +82,14 @@ Preferred communication style: Simple, everyday language.
 - **streamlit**: Complete web application framework with built-in components
 
 # Recent Changes (August 15, 2025)
+
+## Gemini AI Integration
+- Integrated Google's Gemini AI for advanced question generation
+- Added GeminiQuizGenerator class with sophisticated prompt engineering
+- Implemented intelligent fallback to local generation when API unavailable
+- Enhanced question quality with advanced natural language understanding
+- Updated UI to reflect Gemini AI integration
+- Added proper error handling and API connection management
 
 ## CSV File Support Added
 - Added comprehensive CSV file processing with pandas integration

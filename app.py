@@ -386,11 +386,22 @@ def extract_text_from_article(article_text):
     
     return cleaned_text
 
-def generate_questions_with_local_ai(text_content, num_mc=5, num_tf=5, difficulty="medium", question_types=["multiple_choice", "true_false"]):
+def generate_questions_with_gemini_ai(text_content, num_mc=5, num_tf=5, difficulty="medium"):
     """
-    Generate quiz questions using local content analysis without external APIs
+    Generate quiz questions using Gemini AI
     """
-    return create_intelligent_questions(text_content, num_mc, num_tf, difficulty, question_types)
+    try:
+        from gemini_quiz_generator import GeminiQuizGenerator
+        
+        generator = GeminiQuizGenerator()
+        quiz_data = generator.generate_quiz(text_content, difficulty, num_mc, num_tf)
+        
+        return quiz_data
+        
+    except Exception as e:
+        # Fallback to local generation if Gemini fails
+        st.warning(f"Gemini AI temporarily unavailable: {str(e)}. Using local generation as backup.")
+        return create_intelligent_questions(text_content, num_mc, num_tf, difficulty, ["multiple_choice", "true_false"])
 
 def create_intelligent_questions(content, num_mc=5, num_tf=5, difficulty="medium", question_types=["multiple_choice", "true_false"]):
     """
@@ -677,15 +688,15 @@ def main():
     # Navigation helper (removed floating buttons to fix React errors)
     
     st.title("📚 AI Quiz Generator")
-    st.markdown("Upload PDF files or paste article text to generate customizable quiz questions with intelligent content analysis")
+    st.markdown("Upload PDF/CSV files or paste article text to generate customizable quiz questions with Google's advanced Gemini AI")
     
     # Sidebar for configuration
     with st.sidebar:
         st.header("⚙️ Configuration")
         
-        st.subheader("Local AI Generation")
-        st.success("✅ Local question generation enabled")
-        st.info("No external API required - questions generated using intelligent content analysis")
+        st.subheader("Gemini AI Generation")
+        st.success("✅ Gemini AI enabled")
+        st.info("Powered by Google's advanced Gemini AI for high-quality question generation")
         
         st.subheader("Supported Content Types")
         st.write("📄 **PDF Files**: Chapters, research papers, textbooks")
@@ -808,13 +819,12 @@ def main():
                 if include_tf:
                     question_types.append("true_false")
                 
-                with st.spinner(f"Analyzing content and generating {difficulty} level quiz questions..."):
-                    questions_data = generate_questions_with_local_ai(
+                with st.spinner(f"Analyzing content with Gemini AI and generating {difficulty} level quiz questions..."):
+                    questions_data = generate_questions_with_gemini_ai(
                         extracted_text, 
                         num_mc, 
                         num_tf, 
-                        difficulty, 
-                        question_types
+                        difficulty
                     )
                 
                 st.success("✅ Quiz questions generated successfully!")

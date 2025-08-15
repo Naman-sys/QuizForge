@@ -2,6 +2,7 @@ modules = ["python-3.11"]
 
 [nix]
 channel = "stable-25_05"
+packages = ["glibcLocales"]
 
 [deployment]
 deploymentTarget = "autoscale"
@@ -36,4 +37,4 @@ localPort = 5000
 externalPort = 80
 
 [agent]
-integrations = ["python_openai==1.0.0"]
+integrations = ["python_openai==1.0.0", "python_gemini==1.0.0"]
