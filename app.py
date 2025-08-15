@@ -791,23 +791,29 @@ def main():
         with col1:
             if st.button("📄 Download as TXT"):
                 txt_data = export_quiz(st.session_state.edited_questions, "txt")
-                st.download_button(
-                    label="Download TXT File",
-                    data=txt_data,
-                    file_name="quiz.txt",
-                    mime="text/plain"
-                )
+                if txt_data:
+                    st.download_button(
+                        label="Download TXT File",
+                        data=txt_data,
+                        file_name="quiz.txt",
+                        mime="text/plain"
+                    )
+                else:
+                    st.error("Failed to generate TXT file")
         
         with col2:
             if st.button("📄 Download as DOCX"):
                 try:
                     docx_data = export_quiz(st.session_state.edited_questions, "docx")
-                    st.download_button(
-                        label="Download DOCX File", 
-                        data=docx_data,
-                        file_name="quiz.docx",
-                        mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-                    )
+                    if docx_data:
+                        st.download_button(
+                            label="Download DOCX File", 
+                            data=docx_data,
+                            file_name="quiz.docx",
+                            mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                        )
+                    else:
+                        st.error("Failed to generate DOCX file")
                 except Exception as e:
                     st.error(f"Error creating DOCX: {str(e)}")
         
