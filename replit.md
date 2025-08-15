@@ -19,7 +19,7 @@ Preferred communication style: Simple, everyday language.
 
 **AI Question Generation**
 - `generate_questions_with_hf()` function integrates with Hugging Face Inference API
-- Uses google/flan-t5-large model for intelligent question generation
+- Uses gpt2 model for intelligent question generation
 - `create_fallback_questions()` provides content-based question generation when AI responses need formatting
 - Supports configurable numbers of multiple-choice and true/false questions
 
@@ -54,7 +54,7 @@ Preferred communication style: Simple, everyday language.
 # External Dependencies
 
 ## AI Services
-- **Hugging Face Inference API**: Primary service using google/flan-t5-large model
+- **Hugging Face Inference API**: Primary service using gpt2 model
 - Requires HUGGINGFACE_API_KEY environment variable for authentication
 - Advanced JSON parsing with intelligent fallback for non-JSON responses
 - Content-based question generation when API calls fail
@@ -78,7 +78,7 @@ Preferred communication style: Simple, everyday language.
 
 - Completely rebuilt as a structured PDF Quiz Generator application
 - Implemented four core functions as requested: extract_text_from_pdf(), generate_questions_with_hf(), render_quiz_form(), export_quiz()
-- Upgraded to google/flan-t5-large model for better instruction following
+- Upgraded to gpt2 model for better instruction following
 - Added comprehensive PDF-only upload with pdfplumber integration
 - Created interactive quiz editing interface with add/delete/modify capabilities
 - Implemented dual export format support (TXT and DOCX) with proper formatting

@@ -73,8 +73,8 @@ def generate_questions_with_hf(text_content, num_mc=5, num_tf=5):
     if not hf_token:
         raise Exception("HUGGINGFACE_API_KEY environment variable is required")
     
-    # Use Google Flan-T5 model for better instruction following
-    api_url = "https://api-inference.huggingface.co/models/google/flan-t5-large"
+    # Use GPT-2 model which is widely available
+    api_url = "https://api-inference.huggingface.co/models/gpt2"
     headers = {"Authorization": f"Bearer {hf_token}"}
     
     # Truncate content to avoid token limits
