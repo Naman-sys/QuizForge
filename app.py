@@ -737,10 +737,36 @@ def main():
     
     # Input method selection
     st.header("📝 Choose Input Method")
-    input_method = st.radio(
-        "Select how you want to provide content:",
-        ["📄 Upload PDF File", "📊 Upload CSV Data", "📰 Paste Article Text"]
-    )
+    st.markdown("Select how you want to provide content:")
+    
+    # Create three equal columns for horizontal layout
+    col1, col2, col3 = st.columns(3)
+    
+    # Get current selection or default
+    current_method = st.session_state.get('input_method', "📄 Upload PDF File")
+    
+    with col1:
+        pdf_type = "primary" if current_method == "📄 Upload PDF File" else "secondary"
+        pdf_selected = st.button("📄 Upload PDF File", use_container_width=True, type=pdf_type)
+    
+    with col2:
+        csv_type = "primary" if current_method == "📊 Upload CSV Data" else "secondary"
+        csv_selected = st.button("📊 Upload CSV Data", use_container_width=True, type=csv_type)
+    
+    with col3:
+        article_type = "primary" if current_method == "📰 Paste Article Text" else "secondary"
+        article_selected = st.button("📰 Paste Article Text", use_container_width=True, type=article_type)
+    
+    # Store selection in session state
+    if pdf_selected:
+        st.session_state.input_method = "📄 Upload PDF File"
+    elif csv_selected:
+        st.session_state.input_method = "📊 Upload CSV Data"
+    elif article_selected:
+        st.session_state.input_method = "📰 Paste Article Text"
+    
+    # Update current selection
+    input_method = st.session_state.get('input_method', "📄 Upload PDF File")
     
     extracted_text = None
     
