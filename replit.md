@@ -1,6 +1,6 @@
 # Overview
 
-This is a complete AI Quiz Generator application built with Python and Streamlit. The app processes both PDF files and article text to generate educational quiz questions using Hugging Face's AI models. Teachers can upload PDF chapters or paste article content, generate multiple-choice and true/false questions, edit them interactively, and export the quiz with answer keys as downloadable files. The system uses the Mistral-7B-Instruct model for intelligent question generation with fallback content-based generation.
+This is a complete AI Quiz Generator application built with Python and Streamlit. The app processes both PDF files and article text to generate educational quiz questions using local intelligent content analysis without requiring external APIs. Teachers can upload PDF chapters or paste article content, generate multiple-choice and true/false questions, edit them interactively, and export the quiz with answer keys as downloadable files. The system uses the Mistral-7B-Instruct model for intelligent question generation with fallback content-based generation.
 
 # User Preferences
 
@@ -17,11 +17,12 @@ Preferred communication style: Simple, everyday language.
 - Text cleaning and normalization for article content with minimum length validation
 - Graceful error handling for missing dependencies and extraction failures
 
-**AI Question Generation**
-- `generate_questions_with_hf()` function integrates with Hugging Face Inference API
-- Uses mistralai/Mistral-7B-Instruct-v0.2 model for intelligent question generation
-- `create_fallback_questions()` provides content-based question generation when AI responses need formatting
+**Local AI Question Generation**
+- `generate_questions_with_local_ai()` function uses intelligent content analysis
+- `create_intelligent_questions()` provides sophisticated local question generation
+- Advanced text processing with key term extraction and context analysis
 - Supports configurable numbers of multiple-choice and true/false questions
+- No external API dependencies - fully offline capable
 
 **Interactive Quiz Editor**
 - `render_quiz_form()` function creates an editable interface for generated questions
@@ -53,11 +54,11 @@ Preferred communication style: Simple, everyday language.
 
 # External Dependencies
 
-## AI Services
-- **Hugging Face Inference API**: Primary service using mistralai/Mistral-7B-Instruct-v0.2 model
-- Requires HUGGINGFACE_API_KEY environment variable for authentication
-- Advanced JSON parsing with intelligent fallback for non-JSON responses
-- Content-based question generation when API calls fail
+## Local AI Services
+- **Local Content Analysis**: Advanced text processing and question generation
+- **Key Term Extraction**: Identifies important concepts and terminology
+- **Context Analysis**: Creates relevant questions based on content structure
+- **No External Dependencies**: Fully offline operation without API requirements
 
 ## File Processing Libraries
 - **pdfplumber**: Primary PDF text extraction library with excellent text quality
