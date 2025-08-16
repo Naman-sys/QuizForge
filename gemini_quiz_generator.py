@@ -35,10 +35,10 @@ class GeminiQuizGenerator:
             model = genai.GenerativeModel(self.model)
             
             # Configure generation parameters
-            generation_config = {
-                'temperature': 0.7,
-                'max_output_tokens': 4000
-            }
+            generation_config = genai.GenerationConfig(
+                temperature=0.7,
+                max_output_tokens=4000
+            )
             
             response = model.generate_content(
                 prompt,
@@ -47,7 +47,22 @@ class GeminiQuizGenerator:
             
             # Parse the JSON response
             if response.text:
-                quiz_data = json.loads(response.text)
+                response_text = response.text.strip()
+                
+                # Try to extract JSON from response if it's wrapped in markdown
+                if '```json' in response_text:
+                    start = response_text.find('```json') + 7
+                    end = response_text.find('```', start)
+                    if end != -1:
+                        response_text = response_text[start:end].strip()
+                elif '```' in response_text:
+                    start = response_text.find('```') + 3
+                    end = response_text.find('```', start)
+                    if end != -1:
+                        response_text = response_text[start:end].strip()
+                
+                # Parse JSON
+                quiz_data = json.loads(response_text)
                 return self._validate_and_format_quiz(quiz_data, num_mc, num_tf)
             else:
                 raise Exception("Empty response from Gemini API")
@@ -105,14 +120,15 @@ FORMATTING INSTRUCTIONS:
 - Include helpful explanations for learning
 - Base ALL questions strictly on the provided content
 - Avoid questions that require external knowledge
+- IMPORTANT: Response must be valid JSON only, no extra text or markdown formatting
 
-OUTPUT FORMAT (JSON):
+OUTPUT FORMAT (JSON ONLY):
 {{
     "multiple_choice": [
         {{
             "question": "Clear, well-formed question?",
             "options": ["A) First option", "B) Second option", "C) Third option", "D) Fourth option"],
-            "correct_answer": "A) First option",
+            "correct_answer": "A",
             "explanation": "Clear explanation of why this answer is correct"
         }}
     ],
@@ -125,7 +141,7 @@ OUTPUT FORMAT (JSON):
     ]
 }}
 
-Generate exactly {num_mc} multiple choice and {num_tf} true/false questions. Ensure all questions are directly answerable from the provided content."""
+Generate exactly {num_mc} multiple choice and {num_tf} true/false questions. Return ONLY the JSON, no other text."""
 
         return prompt
 
@@ -170,7 +186,17 @@ Generate exactly {num_mc} multiple choice and {num_tf} true/false questions. Ens
         if not isinstance(question["options"], list) or len(question["options"]) != 4:
             return False
         
-        if question["correct_answer"] not in question["options"]:
+        # Check if correct answer matches any option (handle both letter format like "A" and full option like "A) First option")
+        correct_answer = question["correct_answer"]
+        options = question["options"]
+        
+        # If correct answer is just a letter, find the matching option
+        if len(correct_answer) == 1 and correct_answer in ['A', 'B', 'C', 'D']:
+            # Find the option that starts with this letter
+            matching_options = [opt for opt in options if opt.startswith(f"{correct_answer})")]
+            if not matching_options:
+                return False
+        elif correct_answer not in options:
             return False
         
         return True
