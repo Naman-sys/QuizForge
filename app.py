@@ -24,6 +24,25 @@ st.set_page_config(
     layout="wide"
 )
 
+# Platform compatibility check
+def check_platform_compatibility():
+    """Check if we're running on a compatible platform"""
+    import platform
+    system = platform.system().lower()
+    
+    # Show platform info in sidebar
+    with st.sidebar:
+        st.info(f"🖥️ Running on: {platform.system()}")
+        
+        # API Key status
+        api_key = os.environ.get("GEMINI_API_KEY") or os.environ.get("GOOGLE_API_KEY")
+        if api_key:
+            st.success("🔑 API Key configured")
+        else:
+            st.warning("🔑 No API Key - Using local generation")
+    
+    return True
+
 # Custom CSS for modern styling
 def apply_custom_styling():
     st.markdown("""
@@ -400,7 +419,11 @@ def generate_questions_with_gemini_ai(text_content, num_mc=5, num_tf=5, difficul
         
     except Exception as e:
         # Fallback to local generation if Gemini fails
-        st.warning(f"Gemini AI temporarily unavailable: {str(e)}. Using local generation as backup.")
+        error_msg = str(e)
+        if "GEMINI_API_KEY" in error_msg or "GOOGLE_API_KEY" in error_msg:
+            st.info("🔑 To use Gemini AI, set your GEMINI_API_KEY or GOOGLE_API_KEY environment variable. Using local generation for now.")
+        else:
+            st.warning(f"Gemini AI temporarily unavailable: {error_msg}. Using local generation as backup.")
         return create_intelligent_questions(text_content, num_mc, num_tf, difficulty, ["multiple_choice", "true_false"])
 
 def create_intelligent_questions(content, num_mc=5, num_tf=5, difficulty="medium", question_types=["multiple_choice", "true_false"]):
@@ -682,6 +705,9 @@ def export_quiz_docx(questions_data):
 
 # Main App
 def main():
+    # Check platform compatibility and show status
+    check_platform_compatibility()
+    
     # Apply custom styling
     apply_custom_styling()
     

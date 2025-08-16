@@ -1,19 +1,18 @@
 import json
 import logging
 import os
-from google import genai
-from google.genai import types
+import google.generativeai as genai
 from typing import Dict, List, Any
 
 class GeminiQuizGenerator:
     def __init__(self):
         """Initialize Gemini client with API key"""
-        api_key = os.environ.get("GEMINI_API_KEY")
+        api_key = os.environ.get("GEMINI_API_KEY") or os.environ.get("GOOGLE_API_KEY")
         if not api_key:
-            raise ValueError("GEMINI_API_KEY environment variable is required")
+            raise ValueError("GEMINI_API_KEY or GOOGLE_API_KEY environment variable is required")
         
-        self.client = genai.Client(api_key=api_key)
-        self.model = "gemini-2.5-flash"
+        genai.configure(api_key=api_key)
+        self.model = "gemini-1.5-flash"
 
     def generate_quiz(self, content: str, difficulty: str, num_mc: int, num_tf: int) -> Dict[str, Any]:
         """
@@ -33,14 +32,16 @@ class GeminiQuizGenerator:
             prompt = self._create_quiz_prompt(content, difficulty, num_mc, num_tf)
             
             # Call Gemini API
-            response = self.client.models.generate_content(
-                model=self.model,
-                contents=prompt,
-                config=types.GenerateContentConfig(
-                    response_mime_type="application/json",
-                    temperature=0.7,
-                    max_output_tokens=4000
-                )
+            model = genai.GenerativeModel(self.model)
+            
+            generation_config = genai.GenerationConfig(
+                temperature=0.7,
+                max_output_tokens=4000
+            )
+            
+            response = model.generate_content(
+                prompt,
+                generation_config=generation_config
             )
             
             # Parse the JSON response
@@ -188,9 +189,9 @@ Generate exactly {num_mc} multiple choice and {num_tf} true/false questions. Ens
     def test_connection(self) -> bool:
         """Test if Gemini API connection is working"""
         try:
-            response = self.client.models.generate_content(
-                model=self.model,
-                contents="Say 'Hello' in JSON format: {\"message\": \"Hello\"}"
+            model = genai.GenerativeModel(self.model)
+            response = model.generate_content(
+                "Say 'Hello' in JSON format: {\"message\": \"Hello\"}"
             )
             return response.text is not None
         except Exception:
