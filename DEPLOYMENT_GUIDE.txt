@@ -1,0 +1,42 @@
+DEPLOYMENT GUIDE FOR QUIZ GENERATOR
+=====================================
+
+❌ NETLIFY WON'T WORK! 
+Netlify only hosts static websites, not Python applications.
+
+✅ USE THESE PLATFORMS INSTEAD:
+
+1. STREAMLIT CLOUD (Recommended - FREE)
+   - Go to: https://share.streamlit.io/
+   - Connect your GitHub account
+   - Upload your code to GitHub
+   - Deploy directly - it's FREE!
+
+2. HEROKU
+   - Upload all files including Procfile
+   - Set GEMINI_API_KEY in environment variables
+   - Deploy
+
+3. RAILWAY
+   - Connect GitHub repo
+   - Railway will auto-detect Python/Streamlit
+   - Set GEMINI_API_KEY in environment variables
+
+4. RENDER
+   - Upload code
+   - Set build command: pip install -r requirements.txt
+   - Set start command: streamlit run app.py --server.port=$PORT
+
+5. REPLIT DEPLOYMENTS
+   - Just click "Deploy" in your Replit project
+
+REQUIRED FILES (Already Created):
+- Procfile ✅
+- runtime.txt ✅  
+- setup.sh ✅
+- .streamlit/config.toml ✅
+
+ENVIRONMENT VARIABLE NEEDED:
+GEMINI_API_KEY = your_api_key_here
+
+For local use: streamlit run app.py
