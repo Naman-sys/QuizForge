@@ -20,7 +20,7 @@ except ImportError:
 MAX_UPLOAD_MB = 5
 MAX_UPLOAD_BYTES = MAX_UPLOAD_MB * 1024 * 1024
 
-# Streamlit page config (must be called early)
+# Streamlit page config
 st.set_page_config(
     page_title="AI Quiz Generator",
     page_icon="📚",
@@ -29,7 +29,6 @@ st.set_page_config(
 
 # ---------- Helpers ----------
 def check_platform_compatibility():
-    """Check if we're running on a compatible platform and show status in sidebar"""
     import platform
     with st.sidebar:
         st.info(f"🖥️ Running on: {platform.system()}")
@@ -43,44 +42,36 @@ def check_platform_compatibility():
 def apply_custom_styling():
     st.markdown("""
     <style>
-    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Nunito+Sans:wght@300;400;500;600&display=swap');
-    .stApp { font-family: 'Nunito Sans', sans-serif; background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%); min-height: 100vh; }
-    .main .block-container { padding-top: 2rem; background: rgba(30, 30, 46, 0.95); border-radius: 20px; margin: 1rem auto; max-width: 1200px; box-shadow: 0 20px 40px rgba(0,0,0,0.3); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); text-align: center; }
-    h1, h2, h3, .stSelectbox label, .stCheckbox label { font-family: 'Poppins', sans-serif !important; font-weight: 600 !important; text-transform: uppercase !important; letter-spacing: 1px !important; color: #ffffff !important; }
-    h1 { background: linear-gradient(135deg, #00d4ff, #5b86e5); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-size: 2.5rem !important; text-align: center; margin-bottom: 1rem !important; text-shadow: 0 0 20px rgba(0, 212, 255, 0.3); }
-    h2 { color: #ffffff !important; border-bottom: 2px solid #00d4ff; padding-bottom: 0.5rem; margin-bottom: 1.5rem !important; text-shadow: 0 0 10px rgba(0, 212, 255, 0.5); text-align: center; }
-    h3 { text-align: center; color: #ffffff !important; }
-    .css-1d391kg { background: linear-gradient(180deg, #0f1419 0%, #1a1a2e 100%); border-radius: 0 20px 20px 0; border-right: 1px solid rgba(0, 212, 255, 0.3); }
-    .stTextInput input, .stTextArea textarea, .stSelectbox select { border: 2px solid #2a2a3e !important; border-radius: 12px !important; padding: 12px !important; transition: all 0.3s ease !important; background: rgba(26,26,46,0.8) !important; color: #ffffff !important; }
-    .stTextInput input:focus, .stTextArea textarea:focus, .stSelectbox select:focus { border-color: #00d4ff !important; box-shadow: 0 0 20px rgba(0, 212, 255, 0.4) !important; transform: translateY(-2px) !important; background: rgba(26, 26, 46, 0.9) !important; }
-    .stButton button { background: linear-gradient(135deg, #00d4ff, #5b86e5) !important; color: white !important; border: none !important; border-radius: 25px !important; padding: 12px 30px !important; font-family: 'Poppins', sans-serif !important; font-weight: 600 !important; text-transform: uppercase !important; letter-spacing: 1px !important; transition: all 0.3s ease !important; box-shadow: 0 8px 15px rgba(0, 212, 255, 0.3) !important; }
-    .stButton button:hover { transform: translateY(-3px) !important; box-shadow: 0 15px 25px rgba(0, 212, 255, 0.5) !important; }
-    .stButton[data-baseweb="button"][kind="primary"] button { background: linear-gradient(135deg, #ff6b6b, #ee5a24) !important; animation: pulse 2s infinite; }
-    @keyframes pulse { 0% { box-shadow: 0 8px 15px rgba(255,107,107,0.3);} 50% {box-shadow: 0 15px 25px rgba(255,107,107,0.5);} 100% {box-shadow: 0 8px 15px rgba(255,107,107,0.3);} }
-    .sticky-actions { position: sticky; top: 0; background: rgba(26, 26, 46, 0.95); backdrop-filter: blur(10px); padding: 15px; border-radius: 15px; margin-bottom: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.3); border: 1px solid rgba(0,212,255,0.2); z-index: 100; }
-    .question-card { background: linear-gradient(135deg, #1e1e2e, #252540); border-radius: 15px; padding: 20px; margin: 15px 0; border-left: 5px solid #00d4ff; box-shadow: 0 8px 25px rgba(0,0,0,0.4); transition: all 0.3s ease; animation: slideInUp 0.6s ease-out; border: 1px solid rgba(0,212,255,0.1); }
-    .question-card:hover { transform: translateY(-5px); box-shadow: 0 15px 35px rgba(0,212,255,0.2); border-left-color: #ff6b6b; }
-    @keyframes slideInUp { from {opacity: 0; transform: translateY(30px);} to {opacity: 1; transform: translateY(0);} }
-    .streamlit-expanderHeader { background: linear-gradient(135deg, #00d4ff, #5b86e5) !important; color: white !important; border-radius: 12px !important; font-family: 'Poppins', sans-serif !important; font-weight: 600 !important; text-transform: uppercase !important; letter-spacing: 1px !important; }
-    .streamlit-expanderContent { background: #1e1e2e !important; border-radius: 0 0 12px 12px !important; border: 2px solid #00d4ff !important; border-top: none !important; }
-    .stFileUploader { background: linear-gradient(135deg, #1e1e2e, #252540) !important; border: 2px dashed #00d4ff !important; border-radius: 15px !important; padding: 30px !important; text-align: center !important; transition: all 0.3s ease !important; color: #ffffff !important; margin: 0 auto !important; max-width: 600px !important; }
-    .stApp > div > div > div > div { text-align: center !important; }
-    .stSelectbox, .stSlider, .stTextInput, .stTextArea, .stNumberInput { text-align: center !important; margin: 0 auto !important; max-width: 600px !important; }
-    .stButton { text-align: center !important; margin: 1rem auto !important; display: block !important; }
-    .row-widget { justify-content: center !important; }
-    label { text-align: center !important; display: block !important; width: 100% !important; }
-    .stFileUploader:hover { border-color: #ff6b6b !important; background: rgba(0,212,255,0.1) !important; box-shadow: 0 0 20px rgba(0,212,255,0.2) !important; }
-    .download-section { background: linear-gradient(135deg, #1e1e2e, #252540); border-radius: 15px; padding: 25px; margin: 20px 0; border: 2px solid rgba(0,212,255,0.3); text-align: center; box-shadow: 0 8px 25px rgba(0,0,0,0.3); }
-    @media (max-width: 768px) { .main .block-container { margin: 0.5rem; border-radius: 15px; } }
+    .stApp {font-family: 'Nunito Sans', sans-serif;}
     </style>
     """, unsafe_allow_html=True)
 
+def fix_file_uploader_limit_label(file_types="PDF"):
+    """Override Streamlit's default 200MB text to show 5MB"""
+    st.markdown(
+        f"""
+        <style>
+        .stFileUploader div[data-testid="stFileUploaderDropzone"] small {{
+            visibility: hidden;
+            position: relative;
+        }}
+        .stFileUploader div[data-testid="stFileUploaderDropzone"] small:after {{
+            content: "Limit {MAX_UPLOAD_MB}MB per file • {file_types}";
+            visibility: visible;
+            position: absolute;
+            left: 0;
+            top: 0;
+            color: #bbb;
+        }}
+        </style>
+        """,
+        unsafe_allow_html=True
+    )
+
 def _enforce_size(uploaded_file, label="file"):
-    """Raise a Streamlit error if the uploaded file exceeds MAX_UPLOAD_MB."""
     try:
         size = getattr(uploaded_file, "size", None)
         if size is None:
-            # Try reading buffer if size not set (older Streamlit)
             uploaded_file.seek(0, os.SEEK_END)
             size = uploaded_file.tell()
             uploaded_file.seek(0)
@@ -89,467 +80,141 @@ def _enforce_size(uploaded_file, label="file"):
             return False
         return True
     except Exception:
-        # If anything goes wrong, fail safe and prevent processing
         st.error("❌ Could not validate file size. Please re-upload a smaller file.")
         return False
 
 def extract_text_from_pdf(pdf_file):
-    """Extract clean text from uploaded PDF using pdfplumber."""
     if pdfplumber is None:
-        raise Exception("pdfplumber is required for PDF processing. Please install it.")
-    try:
-        text_content = []
-        with pdfplumber.open(pdf_file) as pdf:
-            for page in pdf.pages:
-                text = page.extract_text()
-                if text:
-                    text_content.append(text)
-        extracted_text = '\n\n'.join(text_content)
-        if not extracted_text.strip():
-            raise Exception("No text could be extracted from the PDF. It may be images-only or password protected.")
-        return extracted_text
-    except Exception as e:
-        raise Exception(f"Error extracting text from PDF: {str(e)}")
+        raise Exception("pdfplumber is required for PDF processing.")
+    text_content = []
+    with pdfplumber.open(pdf_file) as pdf:
+        for page in pdf.pages:
+            text = page.extract_text()
+            if text:
+                text_content.append(text)
+    extracted_text = "\n\n".join(text_content)
+    if not extracted_text.strip():
+        raise Exception("No text extracted. File may be image-only or protected.")
+    return extracted_text
 
 def extract_text_from_article(article_text):
-    """Process and clean article text for quiz generation."""
-    if not article_text or not article_text.strip():
+    if not article_text.strip():
         raise Exception("Article text cannot be empty.")
-    cleaned_text = article_text.strip()
-    cleaned_text = re.sub(r'\n\s*\n', '\n\n', cleaned_text)
-    cleaned_text = re.sub(r' +', ' ', cleaned_text)
-    if len(cleaned_text) < 100:
-        raise Exception("Article text is too short. Provide at least 100 characters for meaningful quiz generation.")
-    return cleaned_text
+    cleaned = re.sub(r'\n\s*\n', '\n\n', article_text.strip())
+    cleaned = re.sub(r' +', ' ', cleaned)
+    if len(cleaned) < 100:
+        raise Exception("Article text too short (min 100 chars).")
+    return cleaned
 
 def generate_questions_with_gemini_ai(text_content, num_mc=5, num_tf=5, difficulty="medium"):
-    """
-    Generate quiz questions using Gemini AI.
-    Falls back to local generation if Gemini is unavailable.
-    """
     try:
         from gemini_quiz_generator import GeminiQuizGenerator
         generator = GeminiQuizGenerator()
-        quiz_data = generator.generate_quiz(text_content, difficulty, num_mc, num_tf)
-        return quiz_data
-    except Exception as e:
-        error_msg = str(e)
-        if "GEMINI_API_KEY" in error_msg or "GOOGLE_API_KEY" in error_msg:
-            st.info("🔑 To use Gemini AI, set GEMINI_API_KEY or GOOGLE_API_KEY. Using local generation for now.")
-        else:
-            st.warning(f"Gemini AI temporarily unavailable: {error_msg}. Using local generation as backup.")
-        return create_intelligent_questions(text_content, num_mc, num_tf, difficulty, ["multiple_choice", "true_false"])
+        return generator.generate_quiz(text_content, difficulty, num_mc, num_tf)
+    except Exception:
+        return create_intelligent_questions(text_content, num_mc, num_tf, difficulty)
 
-def create_intelligent_questions(content, num_mc=5, num_tf=5, difficulty="medium", question_types=["multiple_choice", "true_false"]):
-    """Create intelligent quiz questions using local content analysis."""
+def create_intelligent_questions(content, num_mc=5, num_tf=5, difficulty="medium", question_types=["multiple_choice","true_false"]):
     sentences = [s.strip() for s in re.split(r'[.!?]+', content) if len(s.strip()) > 20]
     words = content.split()
+    common_words = {'the','and','for','are','but','not','you','all','can','had','her','was','one','our','out','day','get','has'}
+    key_terms = [w for w in words if len(w) > 4 and w.lower() not in common_words][:15]
 
-    common_words = {'the','and','for','are','but','not','you','all','can','had','her','was','one','our','out','day','get','has',
-                    'him','his','how','its','may','new','now','old','see','two','who','boy','did','she','use','way','when',
-                    'what','with','this','that','have','from','they','know','want','been','good','much','some','time','very',
-                    'were','will','your','about','after','before','other','right','their','there','these','which','would',
-                    'could','should','often','called'}
-
-    key_terms = []
-    for word in words:
-        clean_word = re.sub(r'[^\w]', '', word)
-        if (len(clean_word) > 4 and clean_word.lower() not in common_words and (clean_word[:1].isupper() or len(clean_word) > 7)):
-            key_terms.append(clean_word)
-
-    key_terms = list(dict.fromkeys(key_terms))[:15]
-
-    multiple_choice = []
+    multiple_choice, true_false = [], []
     if "multiple_choice" in question_types and key_terms:
-        for i in range(min(num_mc, max(1, len(key_terms)))):
-            term = key_terms[i % len(key_terms)]
-            if difficulty == "easy":
-                question = f"What is {term}?"
-                correct_option = "A key concept discussed in the text"
-                wrong_options = ["Something not mentioned", "An unrelated topic", "A minor detail"]
-            elif difficulty == "medium":
-                question = f"According to the content, what is the significance of {term}?"
-                correct_option = "It plays a crucial role in the topic discussed"
-                wrong_options = ["It has minimal importance", "It contradicts the main ideas", "It is only mentioned in passing"]
-            else:
-                question = f"Analyze the role of {term} within the broader context of this topic."
-                correct_option = "It represents a critical factor that influences multiple aspects of the subject"
-                wrong_options = ["It is a peripheral element with limited interconnections",
-                                 "It contradicts the established framework",
-                                 "It is an anomaly challenging conventional understanding"]
-            all_options = [correct_option] + wrong_options
-            random.shuffle(all_options)
-            correct_index = all_options.index(correct_option)
-            correct_letter = ['A','B','C','D'][correct_index]
-            formatted_options = [f"{['A','B','C','D'][j]}) {opt}" for j, opt in enumerate(all_options)]
+        for i, term in enumerate(key_terms[:num_mc]):
+            question = f"What is {term}?"
+            options = ["Correct meaning", "Not mentioned", "Unrelated", "Minor detail"]
+            random.shuffle(options)
             multiple_choice.append({
                 "question": question,
-                "options": formatted_options,
-                "correct_answer": correct_letter,
-                "explanation": f"Based on the content, {term} is discussed as {correct_option.lower()}."
+                "options": [f"{chr(65+j)}) {opt}" for j, opt in enumerate(options)],
+                "correct_answer": "A",
+                "explanation": f"{term} is key in the text."
             })
-
-    true_false = []
     if "true_false" in question_types and sentences:
-        for i in range(min(num_tf, len(sentences))):
-            sentence = sentences[i]
-            if difficulty == "easy":
-                statement = sentence[:100] + "..." if len(sentence) > 100 else sentence
-                true_false.append({"question": statement, "correct_answer": "True", "explanation": "This statement is directly from the content."})
-            elif difficulty == "medium":
-                statement = sentence[:150] + "..." if len(sentence) > 150 else sentence
-                true_false.append({"question": statement, "correct_answer": "True", "explanation": "This statement is directly supported by the content."})
-            else:
-                if key_terms:
-                    term = random.choice(key_terms)
-                    statement = f"The text implies that {term} functions as a significant component within the contextual framework presented."
-                    true_false.append({"question": statement, "correct_answer": "True", "explanation": f"The content supports this interpretation regarding {term}."})
+        for i, s in enumerate(sentences[:num_tf]):
+            true_false.append({
+                "question": s[:120],
+                "correct_answer": "True",
+                "explanation": "From the content."
+            })
+    return {"multiple_choice": multiple_choice, "true_false": true_false}
 
-    result = {}
-    if "multiple_choice" in question_types:
-        result["multiple_choice"] = multiple_choice[:num_mc]
-    if "true_false" in question_types:
-        result["true_false"] = true_false[:num_tf]
-    return result
-
-def render_quiz_form(questions_data):
-    """Render the quiz questions in an editable form with enhanced styling."""
-    st.header("📝 Generated Quiz Questions")
-
-    if 'edited_questions' not in st.session_state:
-        st.session_state.edited_questions = copy.deepcopy(questions_data)
-
-    mc_questions = st.session_state.edited_questions.get('multiple_choice', [])
-    if mc_questions:
-        st.subheader("Multiple Choice Questions")
-        for i, q in enumerate(mc_questions):
-            st.markdown(f'<div class="question-card">', unsafe_allow_html=True)
-            with st.expander(f"Question {i+1}: {q['question'][:50]}..."):
-                new_question = st.text_area(f"Question {i+1}", value=q['question'], key=f"mc_q_{i}")
-                st.write("Options:")
-                new_options = []
-                for j, option in enumerate(q['options']):
-                    new_option = st.text_input(f"Option {j+1}", value=option, key=f"mc_opt_{i}_{j}")
-                    new_options.append(new_option)
-                correct_choices = ['A','B','C','D']
-                current_correct = q.get('correct_answer', 'A')
-                correct_index = correct_choices.index(current_correct) if current_correct in correct_choices else 0
-                new_correct = st.selectbox("Correct Answer", correct_choices, index=correct_index, key=f"mc_ans_{i}")
-                new_explanation = st.text_area("Explanation", value=q.get('explanation',''), key=f"mc_exp_{i}")
-
-                st.session_state.edited_questions['multiple_choice'][i] = {
-                    'question': new_question,
-                    'options': new_options,
-                    'correct_answer': new_correct,
-                    'explanation': new_explanation
-                }
-
-                if st.button(f"Delete Question {i+1}", key=f"del_mc_{i}"):
-                    del st.session_state.edited_questions['multiple_choice'][i]
-                    st.rerun()
-            st.markdown('</div>', unsafe_allow_html=True)
-
-    tf_questions = st.session_state.edited_questions.get('true_false', [])
-    if tf_questions:
-        st.subheader("True/False Questions")
-        for i, q in enumerate(tf_questions):
-            st.markdown(f'<div class="question-card">', unsafe_allow_html=True)
-            with st.expander(f"T/F Question {i+1}: {q['question'][:50]}..."):
-                new_question = st.text_area(f"T/F Question {i+1}", value=q['question'], key=f"tf_q_{i}")
-                tf_choices = ['True','False']
-                current_correct = q.get('correct_answer', 'True')
-                correct_index = tf_choices.index(current_correct) if current_correct in tf_choices else 0
-                new_correct = st.selectbox("Correct Answer", tf_choices, index=correct_index, key=f"tf_ans_{i}")
-                new_explanation = st.text_area("Explanation", value=q.get('explanation',''), key=f"tf_exp_{i}")
-
-                st.session_state.edited_questions['true_false'][i] = {
-                    'question': new_question,
-                    'correct_answer': new_correct,
-                    'explanation': new_explanation
-                }
-
-                if st.button(f"Delete T/F Question {i+1}", key=f"del_tf_{i}"):
-                    del st.session_state.edited_questions['true_false'][i]
-                    st.rerun()
-            st.markdown('</div>', unsafe_allow_html=True)
-
-def export_quiz(questions_data, format_type="txt"):
-    """Export quiz questions to downloadable format."""
-    if format_type == "txt":
-        return export_quiz_txt(questions_data)
-    elif format_type == "docx":
-        return export_quiz_docx(questions_data)
-
-def export_quiz_txt(questions_data):
-    """Export quiz to TXT format."""
+def export_quiz_txt(data):
     content = "QUIZ QUESTIONS\n" + "="*50 + "\n\n"
-    mc_questions = questions_data.get('multiple_choice', [])
-    if mc_questions:
-        content += "MULTIPLE CHOICE QUESTIONS:\n" + "-"*30 + "\n\n"
-        for i, q in enumerate(mc_questions):
-            content += f"{i+1}. {q['question']}\n"
-            for option in q['options']:
-                content += f"   {option}\n"
-            content += f"   Correct Answer: {q['correct_answer']}\n"
-            content += f"   Explanation: {q['explanation']}\n\n"
+    for i, q in enumerate(data.get("multiple_choice", [])):
+        content += f"{i+1}. {q['question']}\n"
+        for opt in q['options']:
+            content += f"   {opt}\n"
+        content += f"   Answer: {q['correct_answer']}\n"
+        content += f"   Explanation: {q['explanation']}\n\n"
+    for i, q in enumerate(data.get("true_false", [])):
+        content += f"{len(data.get('multiple_choice', []))+i+1}. {q['question']}\n"
+        content += f"   Answer: {q['correct_answer']}\n"
+        content += f"   Explanation: {q['explanation']}\n\n"
+    return content.encode("utf-8")
 
-    tf_questions = questions_data.get('true_false', [])
-    if tf_questions:
-        content += "TRUE/FALSE QUESTIONS:\n" + "-"*30 + "\n\n"
-        for i, q in enumerate(tf_questions):
-            content += f"{len(mc_questions) + i + 1}. {q['question']}\n"
-            content += f"   Correct Answer: {q['correct_answer']}\n"
-            content += f"   Explanation: {q['explanation']}\n\n"
-    return content.encode('utf-8')
-
-def export_quiz_docx(questions_data):
-    """Export quiz to DOCX format."""
-    if Document is None:
-        raise Exception("python-docx is required for DOCX export. Please install it.")
+def export_quiz_docx(data):
+    if Document is None: raise Exception("python-docx not installed")
     doc = Document()
-    doc.add_heading('Quiz Questions', 0)
+    doc.add_heading("Quiz Questions", 0)
+    for i, q in enumerate(data.get("multiple_choice", [])):
+        doc.add_paragraph(f"{i+1}. {q['question']}")
+        for opt in q['options']: doc.add_paragraph(opt, style="List Bullet")
+        doc.add_paragraph(f"Answer: {q['correct_answer']}")
+        doc.add_paragraph(f"Explanation: {q['explanation']}")
+    for i, q in enumerate(data.get("true_false", [])):
+        doc.add_paragraph(f"{len(data.get('multiple_choice', []))+i+1}. {q['question']}")
+        doc.add_paragraph(f"Answer: {q['correct_answer']}")
+        doc.add_paragraph(f"Explanation: {q['explanation']}")
+    buf = io.BytesIO()
+    doc.save(buf)
+    buf.seek(0)
+    return buf.getvalue()
 
-    mc_questions = questions_data.get('multiple_choice', [])
-    if mc_questions:
-        doc.add_heading('Multiple Choice Questions', level=1)
-        for i, q in enumerate(mc_questions):
-            doc.add_paragraph(f"{i+1}. {q['question']}")
-            for option in q['options']:
-                doc.add_paragraph(f"    {option}", style='List Bullet')
-            doc.add_paragraph(f"Correct Answer: {q['correct_answer']}", style='Normal')
-            doc.add_paragraph(f"Explanation: {q['explanation']}", style='Normal')
-            doc.add_paragraph()
-
-    tf_questions = questions_data.get('true_false', [])
-    if tf_questions:
-        doc.add_heading('True/False Questions', level=1)
-        for i, q in enumerate(tf_questions):
-            doc.add_paragraph(f"{len(mc_questions) + i + 1}. {q['question']}")
-            doc.add_paragraph(f"Correct Answer: {q['correct_answer']}")
-            doc.add_paragraph(f"Explanation: {q['explanation']}")
-            doc.add_paragraph()
-
-    doc_bytes = io.BytesIO()
-    doc.save(doc_bytes)
-    doc_bytes.seek(0)
-    return doc_bytes.getvalue()
-
-# ---------- Main App ----------
+# ---------- Main ----------
 def main():
     check_platform_compatibility()
     apply_custom_styling()
 
     st.title("📚 AI Quiz Generator")
-    st.markdown("Upload PDF/CSV files or paste article text to generate customizable quiz questions with Google's advanced Gemini AI")
 
     with st.sidebar:
-        st.header("⚙️ Configuration")
-        st.subheader("Gemini AI Generation")
-        st.success("✅ Gemini AI enabled")
-        st.info("Powered by Google's advanced Gemini AI for high-quality question generation")
+        st.header("⚙️ Settings")
+        difficulty = st.radio("Difficulty", ["easy","medium","hard"], index=1)
+        include_mc = st.checkbox("Multiple Choice", True)
+        include_tf = st.checkbox("True/False", True)
+        num_mc = st.slider("MCQs", 1, 10, 5) if include_mc else 0
+        num_tf = st.slider("T/F", 1, 10, 5) if include_tf else 0
+        if not include_mc and not include_tf: st.stop()
 
-        st.subheader("Supported Content Types")
-        st.write("📄 **PDF Files**: Chapters, research papers, textbooks")
-        st.write("📊 **CSV Data**: Datasets, tables, statistical information")
-        st.write("📰 **Articles**: Blog posts, news articles, web content")
-        st.write("📖 **Text Content**: Any educational or informational text")
-
-        st.subheader("Quiz Settings")
-        difficulty = st.radio(
-            "Difficulty Level:",
-            ["easy", "medium", "hard"],
-            index=1,
-            help="Easy: Simple vocabulary and basic questions\nMedium: Standard complexity\nHard: Advanced vocabulary and complex analysis"
-        )
-        st.write("**Question Types:**")
-        include_mc = st.checkbox("Multiple Choice Questions", value=True)
-        include_tf = st.checkbox("True/False Questions", value=True)
-        if include_mc:
-            num_mc = st.slider("Number of Multiple Choice Questions", 1, 15, 5)
-        else:
-            num_mc = 0
-        if include_tf:
-            num_tf = st.slider("Number of True/False Questions", 1, 15, 5)
-        else:
-            num_tf = 0
-        if not include_mc and not include_tf:
-            st.error("Please select at least one question type!")
-            st.stop()
-
-    st.header("📝 Choose Input Method")
-    st.markdown("Select how you want to provide content:")
-
-    col1, col2, col3 = st.columns(3)
-    current_method = st.session_state.get('input_method', "📄 Upload PDF File")
-
-    with col1:
-        pdf_type = "primary" if current_method == "📄 Upload PDF File" else "secondary"
-        pdf_selected = st.button("📄 Upload PDF File", use_container_width=True, type=pdf_type)
-    with col2:
-        csv_type = "primary" if current_method == "📊 Upload CSV Data" else "secondary"
-        csv_selected = st.button("📊 Upload CSV Data", use_container_width=True, type=csv_type)
-    with col3:
-        article_type = "primary" if current_method == "📰 Paste Article Text" else "secondary"
-        article_selected = st.button("📰 Paste Article Text", use_container_width=True, type=article_type)
-
-    if pdf_selected:
-        st.session_state.input_method = "📄 Upload PDF File"
-    elif csv_selected:
-        st.session_state.input_method = "📊 Upload CSV Data"
-    elif article_selected:
-        st.session_state.input_method = "📰 Paste Article Text"
-
-    input_method = st.session_state.get('input_method', "📄 Upload PDF File")
+    st.subheader("Upload PDF (≤5 MB)")
+    uploaded_file = st.file_uploader("Choose a PDF file:", type=["pdf"])
+    fix_file_uploader_limit_label("PDF")
 
     extracted_text = None
+    if uploaded_file:
+        if _enforce_size(uploaded_file, "PDF"):
+            extracted_text = extract_text_from_pdf(uploaded_file)
 
-    if input_method == "📄 Upload PDF File":
-        st.subheader("PDF File Upload (Max 5 MB)")
-        uploaded_file = st.file_uploader(
-            "Choose a PDF file:",
-            type=['pdf'],
-            help=f"Upload a PDF chapter (≤ {MAX_UPLOAD_MB} MB) for quiz generation"
-        )
+    article_text = st.text_area("Or paste article text (min 100 chars)")
+    if article_text:
+        extracted_text = extract_text_from_article(article_text)
 
-        if uploaded_file is not None:
-            if not _enforce_size(uploaded_file, "PDF"):
-                uploaded_file = None  # block processing if too large
-            else:
-                try:
-                    with st.spinner("Extracting text from PDF..."):
-                        extracted_text = extract_text_from_pdf(uploaded_file)
-                    st.success(f"✅ Text extracted successfully! ({len(extracted_text)} characters)")
-                except Exception as e:
-                    st.error(f"Error processing PDF: {str(e)}")
+    if extracted_text and st.button("Generate Quiz"):
+        qdata = generate_questions_with_gemini_ai(extracted_text, num_mc, num_tf, difficulty)
+        st.session_state.quiz = copy.deepcopy(qdata)
+        st.success("✅ Quiz Generated!")
 
-    elif input_method == "📊 Upload CSV Data":
-        st.subheader("CSV Data Upload (Max 5 MB)")
-        uploaded_file = st.file_uploader(
-            "Choose a CSV file:",
-            type=['csv'],
-            help=f"Upload a CSV file (≤ {MAX_UPLOAD_MB} MB) for quiz generation"
-        )
-
-        if uploaded_file is not None:
-            if not _enforce_size(uploaded_file, "CSV"):
-                uploaded_file = None
-            else:
-                try:
-                    try:
-                        from file_processor import FileProcessor  # your module
-                    except Exception as e:
-                        raise Exception("Missing or invalid 'file_processor.py'. Please include it with a FileProcessor class exposing process_file(file) -> str.") from e
-
-                    processor = FileProcessor()
-                    with st.spinner("Processing CSV data..."):
-                        extracted_text = processor.process_file(uploaded_file)
-                    if not extracted_text or not isinstance(extracted_text, str):
-                        raise Exception("CSV processor did not return text. Ensure process_file returns a string.")
-                    st.success(f"✅ CSV data processed successfully! ({len(extracted_text)} characters)")
-                except Exception as e:
-                    st.error(f"Error processing CSV: {str(e)}")
-
-    elif input_method == "📰 Paste Article Text":
-        st.subheader("Article Text Input")
-        article_text = st.text_area(
-            "Paste your article content here:",
-            height=300,
-            placeholder="Paste the article text, blog post, or any written content you want to create quiz questions from...",
-            help="You can paste articles from websites, documents, or any text content"
-        )
-        if article_text:
-            try:
-                extracted_text = extract_text_from_article(article_text)
-                st.success(f"✅ Article processed successfully! ({len(extracted_text)} characters)")
-            except Exception as e:
-                st.error(f"Error processing article: {str(e)}")
-
-    if extracted_text:
-        with st.expander("📖 Preview Content"):
-            preview = extracted_text[:1000] + "..." if len(extracted_text) > 1000 else extracted_text
-            st.text_area("Content:", preview, height=200, disabled=True)
-
-        if st.button("🎯 Generate Quiz Questions", type="primary"):
-            try:
-                question_types = []
-                if include_mc: question_types.append("multiple_choice")
-                if include_tf: question_types.append("true_false")
-
-                with st.spinner(f"Analyzing content with Gemini AI and generating {difficulty} level quiz questions..."):
-                    questions_data = generate_questions_with_gemini_ai(
-                        extracted_text,
-                        num_mc,
-                        num_tf,
-                        difficulty
-                    )
-
-                if not questions_data or (not questions_data.get('multiple_choice') and not questions_data.get('true_false')):
-                    st.warning("No questions were generated. Try increasing input length or selecting more question types.")
-                else:
-                    st.success("✅ Quiz questions generated successfully!")
-                    st.session_state.questions_generated = True
-                    st.session_state.original_questions = copy.deepcopy(questions_data)
-                    st.session_state.edited_questions = copy.deepcopy(questions_data)
-            except Exception as e:
-                st.error(f"Error generating questions: {str(e)}")
-
-    if st.session_state.get('questions_generated', False):
-        st.markdown("""
-        <div class="sticky-actions">
-            <div style="display: flex; justify-content: space-between; align-items: center;">
-                <div style="font-family: 'Poppins', sans-serif; font-weight: 600; color: #ffffff;">
-                    Quiz Generated ✅ | Ready for Review & Export
-                </div>
-                <div style="display: flex; gap: 10px;">
-                    <button onclick="window.scrollTo(0, document.querySelector('[data-testid=\\'stHeader\\']').offsetTop)" 
-                            style="padding: 8px 16px; background: linear-gradient(135deg, #00d4ff, #5b86e5); color: white; border: none; border-radius: 20px; cursor: pointer; box-shadow: 0 4px 15px rgba(0, 212, 255, 0.3);">
-                        📝 Edit Questions
-                    </button>
-                    <button onclick="window.scrollTo(0, document.body.scrollHeight)" 
-                            style="padding: 8px 16px; background: linear-gradient(135deg, #ff6b6b, #ee5a24); color: white; border: none; border-radius: 20px; cursor: pointer; box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);">
-                        📥 Export Quiz
-                    </button>
-                </div>
-            </div>
-        </div>
-        """, unsafe_allow_html=True)
-
-        render_quiz_form(st.session_state.edited_questions)
-
-        st.markdown('<div class="download-section">', unsafe_allow_html=True)
-        st.header("📥 Export Quiz")
+    if "quiz" in st.session_state:
+        st.subheader("📥 Export Quiz")
         col1, col2 = st.columns(2)
-
         with col1:
-            if st.button("📄 Prepare TXT"):
-                txt_data = export_quiz(st.session_state.edited_questions, "txt")
-                if txt_data:
-                    st.download_button(
-                        label="Download TXT File",
-                        data=txt_data,
-                        file_name="quiz.txt",
-                        mime="text/plain"
-                    )
-                else:
-                    st.error("Failed to generate TXT file")
-
+            st.download_button("Download TXT", export_quiz_txt(st.session_state.quiz), "quiz.txt", "text/plain")
         with col2:
-            if st.button("📄 Prepare DOCX"):
-                try:
-                    docx_data = export_quiz(st.session_state.edited_questions, "docx")
-                    if docx_data:
-                        st.download_button(
-                            label="Download DOCX File",
-                            data=docx_data,
-                            file_name="quiz.docx",
-                            mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-                        )
-                    else:
-                        st.error("Failed to generate DOCX file")
-                except Exception as e:
-                    st.error(f"Error creating DOCX: {str(e)}")
-
-        st.markdown('</div>', unsafe_allow_html=True)
+            st.download_button("Download DOCX", export_quiz_docx(st.session_state.quiz), "quiz.docx",
+                               "application/vnd.openxmlformats-officedocument.wordprocessingml.document")
 
 if __name__ == "__main__":
     main()
