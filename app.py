@@ -39,15 +39,8 @@ def check_platform_compatibility():
             st.warning("🔑 No API Key - Using local generation")
     return True
 
-def apply_custom_styling():
-    st.markdown("""
-    <style>
-    .stApp {font-family: 'Nunito Sans', sans-serif;}
-    </style>
-    """, unsafe_allow_html=True)
-
-def fix_file_uploader_limit_label(file_types="PDF"):
-    """Override Streamlit's default 200MB text to show 5MB"""
+def fix_file_uploader_limit_label(limit_mb=5, file_types="PDF"):
+    """Override Streamlit's default '200MB' label with a custom limit."""
     st.markdown(
         f"""
         <style>
@@ -56,7 +49,7 @@ def fix_file_uploader_limit_label(file_types="PDF"):
             position: relative;
         }}
         .stFileUploader div[data-testid="stFileUploaderDropzone"] small:after {{
-            content: "Limit {MAX_UPLOAD_MB}MB per file • {file_types}";
+            content: "Limit {limit_mb}MB per file • {file_types}";
             visibility: visible;
             position: absolute;
             left: 0;
@@ -176,7 +169,6 @@ def export_quiz_docx(data):
 # ---------- Main ----------
 def main():
     check_platform_compatibility()
-    apply_custom_styling()
 
     st.title("📚 AI Quiz Generator")
 
@@ -189,9 +181,9 @@ def main():
         num_tf = st.slider("T/F", 1, 10, 5) if include_tf else 0
         if not include_mc and not include_tf: st.stop()
 
-    st.subheader("Upload PDF (≤5 MB)")
+    st.subheader(f"Upload PDF (≤{MAX_UPLOAD_MB} MB)")
     uploaded_file = st.file_uploader("Choose a PDF file:", type=["pdf"])
-    fix_file_uploader_limit_label("PDF")
+    fix_file_uploader_limit_label(MAX_UPLOAD_MB, "PDF")
 
     extracted_text = None
     if uploaded_file:
