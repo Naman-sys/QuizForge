@@ -34,10 +34,11 @@ class GeminiQuizGenerator:
             # Call Gemini API
             model = genai.GenerativeModel(self.model)
             
-            generation_config = genai.GenerationConfig(
-                temperature=0.7,
-                max_output_tokens=4000
-            )
+            # Configure generation parameters
+            generation_config = {
+                'temperature': 0.7,
+                'max_output_tokens': 4000
+            }
             
             response = model.generate_content(
                 prompt,
