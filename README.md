@@ -1,179 +1,86 @@
-# AI Quiz Generator
+📚 QuizForge
 
-A complete Python Streamlit application that processes PDF files and article text to generate quiz questions using Hugging Face AI models.
+AI-powered Quiz Generator that transforms your documents, articles, or notes into interactive quizzes within seconds.
 
-## Features
+🚀 Features
 
-- **Multiple Input Methods**: 
-  - PDF text extraction using pdfplumber
-  - Direct article text input for web content, blogs, and documents
-- **AI-Powered Question Generation**: Leverages Hugging Face Inference API (Mistral-7B-Instruct) to create:
-  - Multiple-choice questions (4 options each)
-  - True/False questions
-- **Interactive Editing**: Teachers can view, edit, or delete any generated question
-- **Export Functionality**: Download quiz + answer key as .txt or .docx files
-- **Responsive UI**: Clean, minimal interface built with Streamlit
-- **Content Processing**: Intelligent text cleaning and validation
+📄 Upload Documents – Supports PDF, DOCX, and text files
 
-## Project Structure
+🤖 AI Quiz Generation – Uses Google Gemini API to create smart, contextual questions
 
-```
-├── app.py                 # Main Streamlit application
-├── README.md             # This file
-├── requirements.txt      # Python dependencies
-└── .streamlit/
-    └── config.toml       # Streamlit configuration
-```
+🎯 Customizable Quizzes – Choose difficulty level and question style
 
-## Core Functions
+🎨 Interactive UI – Built with Streamlit for a smooth experience
 
-- `extract_text_from_pdf()` - Extracts text from uploaded PDF files
-- `extract_text_from_article()` - Processes and cleans article text input
-- `generate_questions_with_hf()` - Generates quiz questions using Hugging Face API
-- `render_quiz_form()` - Renders editable quiz interface
-- `export_quiz()` - Exports quiz to downloadable formats
+☁️ Deploy-Ready – Pre-configured for Replit, Render, and other platforms
 
-## Installation & Setup
+🛠️ Tech Stack
 
-### 1. Install Dependencies
+Python 3.9+
 
-The following packages are required:
+Streamlit – Frontend web framework
 
-```bash
-# Core dependencies
-pip install streamlit
-pip install pdfplumber
-pip install python-docx
-pip install requests
+Gemini API – AI quiz generation
 
-# Alternative PDF processing (if needed)
-pip install unstructured
-```
+pdfplumber / python-docx – File parsing
 
-### 2. Set Hugging Face API Key
+Replit / Render – Deployment ready
 
-#### On Replit:
-1. Go to your Replit project
-2. Click on "Secrets" in the left sidebar
-3. Add a new secret:
-   - Key: `HUGGINGFACE_API_KEY`
-   - Value: Your Hugging Face API token
+📂 Project Structure
+QuizForge/
+│── app.py                # Main Streamlit app  
+│── quiz_generator.py     # Core quiz logic  
+│── gemini_quiz_generator.py # AI integration  
+│── file_processor.py     # Document parsing  
+│── requirements.txt      # Dependencies  
+│── DEPLOYMENT_GUIDE.txt  # Hosting instructions  
+│── .streamlit/config.toml # UI settings  
 
-#### Locally:
-```bash
-export HUGGINGFACE_API_KEY="your_hf_token_here"
-```
+⚡ Quick Start
 
-#### Getting a Hugging Face API Key:
-1. Visit [https://huggingface.co/](https://huggingface.co/)
-2. Create a free account or log in
-3. Go to Settings → Access Tokens
-4. Create a new token with "read" permissions
-5. Copy the token (starts with `hf_`)
+Clone the repo
 
-### 3. Running on Replit
+git clone https://github.com/your-username/QuizForge.git
+cd QuizForge
 
-1. Create a new Python Repl
-2. Upload your project files
-3. Set the `HUGGINGFACE_API_KEY` in Secrets
-4. Run the app:
-   ```bash
-   streamlit run app.py --server.port 5000
-   ```
 
-### 4. Running Locally
+Install dependencies
 
-```bash
-# Clone/download the project
-cd pdf-quiz-generator
-
-# Install dependencies
 pip install -r requirements.txt
 
-# Set API key
-export HUGGINGFACE_API_KEY="your_token"
 
-# Run the app
+Set up environment
+Create a .env file with your API key:
+
+GEMINI_API_KEY=your_api_key_here
+
+
+Run the app
+
 streamlit run app.py
-```
 
-## Usage
+🌐 Deployment
 
-1. **Choose Input Method**: Select either "Upload PDF File" or "Paste Article Text"
-2. **Provide Content**: 
-   - Upload a PDF file, or
-   - Paste article text directly into the text area
-3. **Configure Settings**: Use the sidebar to set the number of multiple-choice and true/false questions
-4. **Generate Questions**: Click "Generate Quiz Questions" to create AI-powered questions
-5. **Edit Questions**: Review and modify questions, options, correct answers, and explanations
-6. **Export**: Download your quiz as a TXT or DOCX file
+Replit – Works out of the box (.replit + Procfile included)
 
-## Supported Content Types
+Render/Heroku – Use requirements.txt & Procfile
 
-**PDF Files:**
-- Text-based PDFs (best results)
-- Scanned PDFs with OCR text layer
-- Academic papers and textbook chapters
-- Any PDF with extractable text content
+Docker – Add a simple Dockerfile for containerization
 
-**Article Text:**
-- Blog posts and web articles
-- News articles and reports
-- Educational content and tutorials
-- Research papers and documentation
-- Any text content (minimum 100 characters)
+🎯 Use Cases
 
-## AI Models Used
+Teachers creating quizzes from lecture notes
 
-- **Primary**: `mistralai/Mistral-7B-Instruct-v0.2` - Advanced instruction-following model
-- **Fallback**: Intelligent content-based question generation when API responses need formatting
+Students revising study material
 
-## Configuration
+Content creators building interactive learning tools
 
-The app uses Streamlit's configuration system. The `.streamlit/config.toml` file contains:
+Anyone who wants quick practice questions from reading material
 
-```toml
-[server]
-headless = true
-address = "0.0.0.0"
-port = 5000
-```
+🤝 Contributing
 
-## Troubleshooting
+Pull requests are welcome! For major changes, open an issue first to discuss your ideas.
 
-### Common Issues:
+📜 License
 
-1. **PDF Text Extraction Fails**:
-   - Ensure PDF contains extractable text (not just images)
-   - Try a different PDF processing library if needed
-
-2. **API Key Errors**:
-   - Verify your Hugging Face API key is correctly set
-   - Check that the token has appropriate permissions
-
-3. **Question Generation Issues**:
-   - The app includes fallback question generation
-   - Try shorter text content if API calls fail
-
-4. **Export Problems**:
-   - Ensure all question fields are properly filled
-   - Check file permissions for downloads
-
-### Environment Variables:
-
-Required:
-- `HUGGINGFACE_API_KEY` - Your Hugging Face API token
-
-## API Limits
-
-- Hugging Face Inference API has rate limits for free accounts
-- For production use, consider upgrading to Hugging Face Pro
-- The app includes intelligent fallback question generation
-
-## License
-
-This project is open source and available under the MIT License.
-
-## Contributing
-
-Feel free to submit issues and pull requests to improve the application.
+MIT License – feel free to use and modify.
